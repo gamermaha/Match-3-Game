@@ -4,12 +4,16 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using DG.Tweening;
+using System.Security.Cryptography;
+
 
 public class TileManager : MonoBehaviour
 {
     [SerializeField] private GameObject poolingContainer;
     [SerializeField] private Tile tileRef;
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
+    [SerializeField] private GameObject particleAnimationRef;
 
     private bool _isSelected = false;
     private Tile _prevSelected = null;
@@ -221,10 +225,7 @@ public class TileManager : MonoBehaviour
         {
             for (int l = 0; l < matchesInRow.Count; l++)
             {
-                int poolingIndex = Random.Range(0, poolingContainer.transform.childCount-1);
-                Board.Instance.grid[matchesInRow[l].Index.x, matchesInRow[l].Index.y].TileID = -1;
-                matchesInRow[l].transform.SetParent(poolingContainer.transform, false);
-                matchesInRow[l].transform.SetSiblingIndex(poolingIndex);
+                StartCoroutine(PoolTile(matchesInRow[l]));
             }
             
         }
@@ -232,26 +233,33 @@ public class TileManager : MonoBehaviour
         {
             for (int l = 0; l < matchesInCol.Count; l++)
             {
-                int poolingIndex = Random.Range(0, poolingContainer.transform.childCount-1);
-                Board.Instance.grid[matchesInCol[l].Index.x, matchesInCol[l].Index.y].TileID = -1;
-                matchesInCol[l].transform.SetParent(poolingContainer.transform, false);
-                matchesInCol[l].transform.SetSiblingIndex(poolingIndex);
+                StartCoroutine(PoolTile(matchesInCol[l]));
             }
         }
 
         if (matchesInCol.Count >= 2 || matchesInRow.Count >= 2)
         {
             matchFound = true;
-            int poolingIndex = Random.Range(0, poolingContainer.transform.childCount-1);
-            Board.Instance.grid[tile.Index.x, tile.Index.y].TileID = -1;
-            tile.transform.SetParent(poolingContainer.transform, false);
-            tile.transform.SetSiblingIndex(poolingIndex);
+            StartCoroutine(PoolTile(tile));
         }
         matchesInCol.Clear();
         matchesInRow.Clear();
         return matchFound;
     }
-    
+
+    IEnumerator PoolTile(Tile tile)
+    {
+      
+            int poolingIndex = Random.Range(0, poolingContainer.transform.childCount - 1);
+            ShrinkToSizeZero(new Vector2Int(tile.Index.x, tile.Index.y));
+            yield return new WaitForSeconds(0.2f);
+            Board.Instance.grid[tile.Index.x, tile.Index.y].TileID = -1;
+            tile.transform.SetParent(poolingContainer.transform, false);
+            tile.transform.localScale = Vector3.one;
+            tile.transform.SetSiblingIndex(poolingIndex);
+        
+        
+    }
     private void MoveTilesDown()
     {
         for (int i = 0; i < Board.Instance.gridSize; i++)
@@ -262,11 +270,12 @@ public class TileManager : MonoBehaviour
                 {
                     for (int moveDown = j; moveDown <= Board.Instance.gridSize-1; moveDown++)
                     {
-                        Tile tile = poolingContainer.transform.GetComponentInChildren<Tile>();
-                        
+                        Tile tile = poolingContainer.GetComponentInChildren<Tile>();
+                       
                         if (moveDown == Board.Instance.gridSize - 1)
                         {
                             SetTilePositionAndIndex(tile, Board.Instance.grid[i, moveDown]);
+                            tile.transform.DOShakePosition(0.3f, strength: new Vector3(0, 0.75f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
                             Board.Instance.grid[i, moveDown].TileID = Board.Instance.grid[i, moveDown]
                                 .GetComponentInChildren<Tile>().Id;
                         }
@@ -275,6 +284,7 @@ public class TileManager : MonoBehaviour
                             if (Board.Instance.grid[i, moveDown + 1].GetComponentInChildren<Tile>() == null)
                             {
                                 SetTilePositionAndIndex(tile, Board.Instance.grid[i, moveDown]);
+                                tile.transform.DOShakePosition(0.3f, strength: new Vector3(0, 0.75f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
                                 Board.Instance.grid[i, moveDown].TileID = Board.Instance.grid[i, moveDown]
                                     .GetComponentInChildren<Tile>().Id;
                             }
@@ -283,6 +293,7 @@ public class TileManager : MonoBehaviour
                                 SetTilePositionAndIndex(
                                     Board.Instance.grid[i, moveDown + 1].GetComponentInChildren<Tile>(),
                                     Board.Instance.grid[i, moveDown]);
+                                Board.Instance.grid[i, moveDown].GetComponentInChildren<Tile>().transform.DOShakePosition(0.3f, strength: new Vector3(0, 0.75f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
                                 Board.Instance.grid[i, moveDown].TileID = Board.Instance.grid[i, moveDown + 1].TileID;
                             }
                         }
@@ -291,6 +302,19 @@ public class TileManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void ExpandToSizeOne(Tile[] tiles)
+    {
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            tiles[i].transform.localScale =Vector3.one; 
+        }
+    }
+    public void ShrinkToSizeZero(Vector2Int index)
+    {
+        Tile tileToDestroy = Board.Instance.grid[index.x, index.y].GetComponentInChildren<Tile>();
+        tileToDestroy.transform.DOScale(0, 0.2f).SetEase(Ease.OutBack);
     }
     
    

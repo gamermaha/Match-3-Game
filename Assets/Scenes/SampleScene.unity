@@ -160,6 +160,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e3169e90983853d4d9d73233512118e2, type: 3}
   - {fileID: 21300000, guid: dca7a45bef5bffa4395181b03e04d081, type: 3}
   - {fileID: 21300000, guid: 6e84ec6047673d440aa377e4980bfea8, type: 3}
+  particleAnimationRef: {fileID: 4059468434656934417, guid: 31904b9a5dc21fb4b9bdc7e2aabfbf71,
+    type: 3}
 --- !u!4 &145466123
 Transform:
   m_ObjectHideFlags: 0
