@@ -28,8 +28,7 @@ public class Tile : MonoBehaviour
     }
     
     private void OnMouseDown()
-    { 
-        Debug.Log("I was clicked");
+    {
         OnClick?.Invoke(this);
     }
 }

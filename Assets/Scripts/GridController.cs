@@ -8,16 +8,16 @@ public class GridController : MonoBehaviour
     {
         GridCell[,] grid = new GridCell[gridSize, gridSize];
         
-        for (int row = 0; row < gridSize; row++)
+        for (int i = 0; i< gridSize; i++)
         {
-            for (int col = 0; col < gridSize; col++)
+            for (int j = 0; j < gridSize; j++)
             {
                 GridCell gridCell = Instantiate(gridCellRef, transform);
                 gridCell.transform.localScale = new Vector3(tileLength, tileWidth);
-                gridCell.transform.position = new Vector3((transform.position.x + (2.5f * tileLength * row)),
-                    (transform.position.y + (2.5f * tileWidth * col)), 0);
-                gridCell.Index = new Vector2Int(row, col);
-                grid[row, col] = gridCell;
+                gridCell.transform.position = new Vector3((transform.position.x + (2.5f * tileLength * i)),
+                    (transform.position.y + (2.5f * tileWidth * j)), 0);
+                gridCell.Index = new Vector2Int(i,j);
+                grid[i, j] = gridCell;
             }
         }
         return grid;
