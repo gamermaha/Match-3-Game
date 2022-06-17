@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Serialization;
-
+﻿using UnityEngine;
 public class Board : MonoBehaviour
 {
     public static Board Instance;
@@ -14,8 +11,7 @@ public class Board : MonoBehaviour
     
     private int _tileLength;
     private int _tileWidth;
-    
-    private Tile[] tiles;
+    private Tile[] _tiles;
     private Camera _cam;
     
     private void Awake()
@@ -50,8 +46,8 @@ public class Board : MonoBehaviour
         grid = new GridCell[gridSize, gridSize];
         grid = gridMaker.GridMaker(gridSize, _tileLength, _tileWidth);
 
-        tiles = new Tile[gridSize * gridSize];
-        tiles = tileManager.InstantiateTileArray(gridSize * gridSize);
+        _tiles = new Tile[gridSize * gridSize];
+        _tiles = tileManager.InstantiateTileArray(gridSize * gridSize);
 
         tileManager.InstantiateTilesForPooling(10);
         
@@ -59,7 +55,7 @@ public class Board : MonoBehaviour
         {
             for (int col = 0; col < gridSize; col++)
             {
-                tileManager.SetTilePositionAndIndex(tiles[(row * gridSize) + col], grid[row, col]);
+                tileManager.SetTilePositionAndIndex(_tiles[(row * gridSize) + col], grid[row, col]);
                 grid[row, col].TileID = grid[row, col].GetComponentInChildren<Tile>().Id;
             }
         }

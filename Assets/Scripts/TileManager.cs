@@ -18,7 +18,7 @@ public class TileManager : MonoBehaviour
     private bool _isSelected = false;
     private Tile _prevSelected = null;
     private Tile _currentSelected = null;
-
+    
     public Tile[] InstantiateTileArray(int arraySize)
     {
         Tile[] tileArray = new Tile[arraySize];
@@ -111,7 +111,6 @@ public class TileManager : MonoBehaviour
     {
         FindMatches(tile1);
         FindMatches(tile2);
-        
         StartCoroutine(FindAllMatches());
         // Board.Instance.PrintGrid();
         // Board.Instance.PrintGrid();
@@ -128,7 +127,7 @@ public class TileManager : MonoBehaviour
              {
                  for(int j = 0; j < Board.Instance.gridSize; j++)
                  {
-                     yield return new WaitForSeconds(0.0001f);
+                     yield return new WaitForSeconds(0.00001f);
                      if (Board.Instance.grid[i, j].GetComponentInChildren<Tile>() != null)
                      {
                          if (FindMatches(Board.Instance.grid[i, j].GetComponentInChildren<Tile>()) == false)
@@ -138,7 +137,6 @@ public class TileManager : MonoBehaviour
                  }
              }
              MoveTilesDown();
-             Debug.Log("matchnotfound no: " + matchNotFound.Count);
              if (matchNotFound.Count >= 100)
                  break;
          }
@@ -252,7 +250,7 @@ public class TileManager : MonoBehaviour
       
             int poolingIndex = Random.Range(0, poolingContainer.transform.childCount - 1);
             ShrinkToSizeZero(new Vector2Int(tile.Index.x, tile.Index.y));
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.6f);
             Board.Instance.grid[tile.Index.x, tile.Index.y].TileID = -1;
             tile.transform.SetParent(poolingContainer.transform, false);
             tile.transform.localScale = Vector3.one;
@@ -275,7 +273,7 @@ public class TileManager : MonoBehaviour
                         if (moveDown == Board.Instance.gridSize - 1)
                         {
                             SetTilePositionAndIndex(tile, Board.Instance.grid[i, moveDown]);
-                            tile.transform.DOShakePosition(0.3f, strength: new Vector3(0, 0.75f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
+                            tile.transform.DOShakePosition(0.2f, strength: new Vector3(0, 0.2f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
                             Board.Instance.grid[i, moveDown].TileID = Board.Instance.grid[i, moveDown]
                                 .GetComponentInChildren<Tile>().Id;
                         }
@@ -284,7 +282,7 @@ public class TileManager : MonoBehaviour
                             if (Board.Instance.grid[i, moveDown + 1].GetComponentInChildren<Tile>() == null)
                             {
                                 SetTilePositionAndIndex(tile, Board.Instance.grid[i, moveDown]);
-                                tile.transform.DOShakePosition(0.3f, strength: new Vector3(0, 0.75f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
+                                tile.transform.DOShakePosition(0.2f, strength: new Vector3(0, 0.2f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
                                 Board.Instance.grid[i, moveDown].TileID = Board.Instance.grid[i, moveDown]
                                     .GetComponentInChildren<Tile>().Id;
                             }
@@ -293,7 +291,7 @@ public class TileManager : MonoBehaviour
                                 SetTilePositionAndIndex(
                                     Board.Instance.grid[i, moveDown + 1].GetComponentInChildren<Tile>(),
                                     Board.Instance.grid[i, moveDown]);
-                                Board.Instance.grid[i, moveDown].GetComponentInChildren<Tile>().transform.DOShakePosition(0.3f, strength: new Vector3(0, 0.75f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
+                                Board.Instance.grid[i, moveDown].GetComponentInChildren<Tile>().transform.DOShakePosition(0.2f, strength: new Vector3(0, 0.2f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
                                 Board.Instance.grid[i, moveDown].TileID = Board.Instance.grid[i, moveDown + 1].TileID;
                             }
                         }
@@ -314,7 +312,7 @@ public class TileManager : MonoBehaviour
     public void ShrinkToSizeZero(Vector2Int index)
     {
         Tile tileToDestroy = Board.Instance.grid[index.x, index.y].GetComponentInChildren<Tile>();
-        tileToDestroy.transform.DOScale(0, 0.2f).SetEase(Ease.OutBack);
+        tileToDestroy.transform.DOScale(0, 0.6f).SetEase(Ease.OutBack);
     }
     
    
