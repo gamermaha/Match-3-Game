@@ -51,9 +51,11 @@ public class Board : MonoBehaviour
         grid = new GridCell[gridSize, gridSize];
         grid = gridMaker.GridMaker(gridSize, _tileLength, _tileWidth);
 
-        _tiles = new Tile[gridSize * gridSize * 2];
+        _tiles = new Tile[gridSize * gridSize];
         _tiles = tileManager.InstantiateTileArray(gridSize * gridSize);
-        tileManager.InstantiateTilesForPooling(10);
+        
+        tileManager.InstantiateTilesForPooling(100);
+        tileManager.InstantiatePowerUpTiles();
         
         for (int i = 0; i< gridSize; i++)
         {
@@ -110,7 +112,7 @@ public class Board : MonoBehaviour
         Debug.Log(msg);
     }
     
-     public IEnumerator MoveTilesDown()
+     public void MoveTilesDown()
     {
         for (int i = 0; i < gridSize; i++)
         {
@@ -125,7 +127,7 @@ public class Board : MonoBehaviour
                             MoveTileDown(grid[i, moveDown + 1].GetComponentInChildren<Tile>(),
                                         grid[i, moveDown]);
                                     grid[i, moveDown].TileID = grid[i, moveDown + 1].TileID;
-                                    yield return new WaitForSeconds(0.000001f);
+                                    //yield return new WaitForSeconds(0.00001f);
                                     
                         }
                     }
@@ -151,7 +153,7 @@ public class Board : MonoBehaviour
      private void MoveTileDown(Tile tileToMove, GridCell finalDestination)
      {
          tileManager.SetTilePositionAndIndex(tileToMove, finalDestination);
-         tileToMove.transform.DOShakePosition(0.4f, strength: new Vector3(0, 0.2f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
+         //tileToMove.transform.DOShakePosition(0.4f, strength: new Vector3(0, 0.2f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
          finalDestination.TileID = finalDestination.GetComponentInChildren<Tile>().Id;
      }
 
