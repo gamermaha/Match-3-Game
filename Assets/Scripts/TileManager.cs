@@ -23,11 +23,33 @@ public class TileManager : MonoBehaviour
         for (int index = 0; index < arraySize; index++)
         {
             Tile newTile = Instantiate(tileRef);
-            newTile.OnClick += OnTileClicked;
+            //newTile.OnClick += OnTileClicked;
             SetTileData(newTile);
             tileArray[index] = newTile;
         }
         return tileArray;
+    }
+
+    public void OnTileClickEnabled()
+    {
+        for (int i = 0; i < Board.Instance.gridSize; i++)
+        {
+            for (int j = 0; j < Board.Instance.gridSize; j++)
+            {
+                Board.Instance.grid[i,j].GetComponentInChildren<Tile>().OnClick += OnTileClicked;
+            }
+        }
+    }
+
+    public void OnTileClickDisabled()
+    {
+        for (int i = 0; i < Board.Instance.gridSize; i++)
+        {
+            for (int j = 0; j < Board.Instance.gridSize; j++)
+            {
+                Board.Instance.grid[i,j].GetComponentInChildren<Tile>().OnClick -= OnTileClicked;
+            }
+        } 
     }
 
     public void InstantiateTilesForPooling(int arraySize)
@@ -51,8 +73,9 @@ public class TileManager : MonoBehaviour
     {
         return poolingContainer.GetComponentInChildren<Tile>();
     }
+    
     private void SetTileData(Tile tile)
-    {
+    { 
         int index = Random.Range(0, sprites.Count);
         tile.GetComponent<SpriteRenderer>().sprite = sprites[index];
         tile.Id = index + 1;
@@ -107,11 +130,13 @@ public class TileManager : MonoBehaviour
         Vector2Int tempIndex = tile1.Index;
         SetTilePositionAndIndex(tile1, Board.Instance.grid[tile2.Index.x, tile2.Index.y]);
         SetTilePositionAndIndex(tile2, Board.Instance.grid[tempIndex.x, tempIndex.y]);
+        Board.Instance.activeState = BoardState.MakingAMatch;
         CheckForMatches(tile1, tile2);
     }
 
     private void CheckForMatches(Tile tile1, Tile tile2)
-    {
+    { 
+        Board.Instance.StopTakingInputs();
         FindMatches(tile1);
         FindMatches(tile2);
         StartCoroutine(FindAllMatches());
@@ -122,28 +147,34 @@ public class TileManager : MonoBehaviour
         List<bool> matchNotFound = new List<bool>();
         while (true)
         {
+            
             matchNotFound.Clear();
+            List<Tile> matchFound = new List<Tile>();
             for (int i = 0; i < Board.Instance.gridSize; i++)
             {
                 for (int j = 0; j < Board.Instance.gridSize; j++)
                 {
+                    StartCoroutine(Board.Instance.MoveTilesDown());
                     if (Board.Instance.grid[i, j].GetComponentInChildren<Tile>() != null)
                     {
-                        if (FindMatches(Board.Instance.grid[i, j].GetComponentInChildren<Tile>()) == false)
-                        {
-                            matchNotFound.Add(FindMatches(Board.Instance.grid[i, j].GetComponentInChildren<Tile>()));
-                            yield return new WaitForSeconds(0.000001f);
-                        }
+                        matchFound.AddRange(FindMatches(Board.Instance.grid[i, j].GetComponentInChildren<Tile>()));
+                        Debug.Log(matchFound.Count);
+                        yield return new WaitForSeconds(0.0001f);
                     }
                 }
             }
-            StartCoroutine(Board.Instance.MoveTilesDown());
-            if (matchNotFound.Count >= 100)
-                break;
+            Board.Instance.activeState = BoardState.RefillFromPool;
+            Board.Instance.AskFromPool();
+            if (matchFound.Count == 0)
+            {
+                Board.Instance.activeState = BoardState.Ready;
+                Board.Instance.StartTakingInputs();
+                yield break;
+            }
         }
     }
 
-    private bool FindMatches(Tile tile)
+    private List<Tile> FindMatches(Tile tile)
     {
         List<Tile> tilesMatchedInRow = FindMatchesInRow(tile);
         List<Tile> tilesMatchedInCol = FindMatchesInCol(tile);
@@ -209,30 +240,39 @@ public class TileManager : MonoBehaviour
         return tilesMatched;
     }
 
-    private bool MatchFound(List<Tile> matchesInRow, List<Tile> matchesInCol, Tile tile)
+    private List<Tile> MatchFound(List<Tile> matchesInRow, List<Tile> matchesInCol, Tile tile)
     {
-        bool matchFound = false;
-        if (matchesInRow.Count >= 2)
-        {
-            for (int l = 0; l < matchesInRow.Count; l++)
-                RemoveTile(matchesInRow[l]);
-        }
-        if (matchesInCol.Count >= 2)
-        {
-            for (int l = 0; l < matchesInCol.Count; l++)
-                RemoveTile(matchesInCol[l]);
-        }
+        
+        List<Tile> matchFoundInRow = CheckTileListForRemoval(matchesInRow);
+        List<Tile> matchFoundInCol = CheckTileListForRemoval(matchesInCol);
 
-        if (matchesInCol.Count >= 2 || matchesInRow.Count >= 2)
+        if (matchFoundInRow.Count != 0 )
         {
-            matchFound = true;
             RemoveTile(tile);
+            return matchFoundInRow;
         }
-        matchesInCol.Clear();
-        matchesInRow.Clear();
-        return matchFound;
+        else if (matchFoundInCol.Count != 0)
+        {
+            RemoveTile(tile);
+            return matchFoundInCol;
+        }
+        else
+        {
+            return new List<Tile>();
+        }
     }
 
+    private List<Tile> CheckTileListForRemoval(List<Tile> listToBeChecked)
+    {
+        if (listToBeChecked.Count >= 2)
+        {
+            for (int l = 0; l < listToBeChecked.Count; l++)
+                RemoveTile(listToBeChecked[l]);
+            return listToBeChecked;
+        }
+        else
+            return new List<Tile>();
+    }
     private void RemoveTile(Tile tile)
     {
         ShrinkTileSizeToZero(new Vector2Int(tile.Index.x, tile.Index.y),
