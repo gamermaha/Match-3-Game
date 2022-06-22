@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolingContainer: {fileID: 636746541}
+  powerUpContainer: {fileID: 485465493}
   tileRef: {fileID: 1211709698292603725, guid: 3a86cf238bc503747af8a04f7cc566dc, type: 3}
   sprites:
   - {fileID: 21300000, guid: 093363a40d9c07a4082e1c0f82d20fc3, type: 3}
@@ -160,8 +161,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e3169e90983853d4d9d73233512118e2, type: 3}
   - {fileID: 21300000, guid: dca7a45bef5bffa4395181b03e04d081, type: 3}
   - {fileID: 21300000, guid: 6e84ec6047673d440aa377e4980bfea8, type: 3}
-  particleAnimationRef: {fileID: 4059468434656934417, guid: 31904b9a5dc21fb4b9bdc7e2aabfbf71,
-    type: 3}
+  powerUps:
+  - {fileID: 21300000, guid: 92c71851e746643458b20da76442dc8a, type: 3}
+  - {fileID: 21300000, guid: af4933a09ecf8114b959eaaf33778e4f, type: 3}
 --- !u!4 &145466123
 Transform:
   m_ObjectHideFlags: 0
@@ -175,6 +177,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &485465493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 485465494}
+  m_Layer: 0
+  m_Name: PowerUpContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &485465494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485465493}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &499605975
 GameObject:
@@ -373,6 +405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: 0
+  activeState: 0
   gridMaker: {fileID: 499605976}
   tileManager: {fileID: 145466122}
 --- !u!4 &814877410

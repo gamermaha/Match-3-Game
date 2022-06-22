@@ -18,6 +18,8 @@ public class TileManager : MonoBehaviour
     private int _gridSize = 0;
     private GridCell[,] _grid;
 
+    private int[] _countsOfTiles = new int[7];
+
 
     public Tile[] InstantiateTileArray(int arraySize)
     {
@@ -165,12 +167,14 @@ public class TileManager : MonoBehaviour
             {
                 SetTilePositionAndIndex(tile1, Board.Instance.grid[tile1.Index.x, tile1.Index.y]);
                 tile1.transform.SetParent(powerUpContainer.transform, false);
+                _countsOfTiles[tile1.Id - 1] += 1; 
                 DestroyRow(tile1.Index.x);
             }
             else if (tile1.Index.y == tile2.Index.y)
             {
                 SetTilePositionAndIndex(tile1, Board.Instance.grid[tile1.Index.x, tile1.Index.y]);
                 tile1.transform.SetParent(powerUpContainer.transform, false);
+                _countsOfTiles[tile1.Id - 1] += 1; 
                 DestroyCol(tile1.Index.y);
             }
         }
@@ -180,12 +184,14 @@ public class TileManager : MonoBehaviour
             {
                 SetTilePositionAndIndex(tile2, Board.Instance.grid[tile2.Index.x, tile2.Index.y]);
                 tile2.transform.SetParent(powerUpContainer.transform, false);
+                _countsOfTiles[tile2.Id - 1] += 1; 
                 DestroyRow(tile2.Index.x);
             }
             else if (tile1.Index.y == tile2.Index.y)
             {
                 SetTilePositionAndIndex(tile2, Board.Instance.grid[tile2.Index.x, tile2.Index.y]);
                 tile2.transform.SetParent(powerUpContainer.transform, false);
+                _countsOfTiles[tile2.Id - 1] += 1; 
                 DestroyCol(tile1.Index.y);
             }
         }
@@ -244,6 +250,7 @@ public class TileManager : MonoBehaviour
             
             if (matches.Count == 0)
             {
+                PrintTileCount();
                 Board.Instance.activeState = BoardState.Ready;
                 Board.Instance.StartTakingInputs();
                 yield break;
@@ -384,6 +391,7 @@ public class TileManager : MonoBehaviour
                 Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
                 if (tile != null && tile.Matched && tile.PowerUp == 0)
                 {
+                    _countsOfTiles[tile.Id - 1] += 1;
                     RemoveTile(tile);
                 }
             }
@@ -397,6 +405,7 @@ public class TileManager : MonoBehaviour
             Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
             if (tile != null)
             {
+                _countsOfTiles[tile.Id - 1] += 1;
                 RemoveTile(tile);
             }
         }
@@ -408,6 +417,7 @@ public class TileManager : MonoBehaviour
             Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
             if (tile != null)
             {
+                _countsOfTiles[tile.Id - 1] += 1;
                 RemoveTile(tile);
             }
         }
@@ -422,6 +432,7 @@ public class TileManager : MonoBehaviour
                 Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
                 if (tile != null && tile.Id == tileID)
                 {
+                    _countsOfTiles[tile.Id - 1] += 1;
                     RemoveTile(tile);
                 }
             }
@@ -441,5 +452,19 @@ public class TileManager : MonoBehaviour
         tile.transform.localScale = Vector3.one;
         tile.Matched = false;
         tile.transform.SetSiblingIndex(poolingIndex);
+    }
+    
+    public void PrintTileCount()
+    {
+
+        string msg = "";
+        
+            for (int j = 0; j < _countsOfTiles.Length ; j++)
+            {
+                msg += j+1 + ":" + _countsOfTiles[j] + "\t";
+            }
+            msg += "\n";
+        
+        Debug.Log(msg);
     }
 }
