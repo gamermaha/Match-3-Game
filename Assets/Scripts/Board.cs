@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 
 public class Board : MonoBehaviour
@@ -46,46 +45,6 @@ public class Board : MonoBehaviour
         StartTakingInputs();
     }
 
-    private void CreateBoard()
-    {
-        grid = new GridCell[gridSize, gridSize];
-        grid = gridMaker.GridMaker(gridSize, _tileLength, _tileWidth);
-
-        _tiles = new Tile[gridSize * gridSize];
-        _tiles = tileManager.InstantiateTileArray(gridSize * gridSize);
-        
-        tileManager.InstantiateTilesForPooling(100);
-        tileManager.InstantiatePowerUpTiles();
-        
-        for (int i = 0; i< gridSize; i++)
-        {
-            
-            for (int j = 0; j < gridSize; j++)
-            {
-                tileManager.SetTilePositionAndIndex(_tiles[(i * gridSize) + j], grid[i, j]);
-                grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
-                // if (i >= 2 && _tiles[(i * gridSize) + j].Id == grid[i - 1, j].TileID ||
-                //     _tiles[(i * gridSize) + j].Id == grid[i - 2, j].TileID)
-                // {
-                //     tileManager.SetTilePositionAndIndex(_tiles[Random.Range(0, _tiles.Length)], grid[i, j]);
-                //     grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
-                // }
-                //
-                // if (j >= 2 && _tiles[(i * gridSize) + j].Id == grid[i, j-1].TileID ||
-                //     _tiles[(i * gridSize) + j].Id == grid[i, j-2].TileID)
-                // {
-                //         tileManager.SetTilePositionAndIndex(_tiles[Random.Range(0, _tiles.Length)], grid[i, j]);
-                //         grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
-                // }
-                // else
-                // {
-                //     tileManager.SetTilePositionAndIndex(_tiles[(i * gridSize) + j], grid[i, j]);
-                //     grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
-                // }
-            }
-        }
-    }
-
     public void StartTakingInputs()
     {
         tileManager.OnTileClickEnabled();
@@ -127,14 +86,14 @@ public class Board : MonoBehaviour
                             MoveTileDown(grid[i, moveDown + 1].GetComponentInChildren<Tile>(),
                                         grid[i, moveDown]);
                                     grid[i, moveDown].TileID = grid[i, moveDown + 1].TileID;
-                                    //yield return new WaitForSeconds(0.00001f);
-                                    
+
                         }
                     }
                 }
             }
         }
     }
+     
      public void AskFromPool()
      {
          for (int i = 0; i < gridSize; i++)
@@ -145,15 +104,55 @@ public class Board : MonoBehaviour
                  if (grid[i, j].GetComponentInChildren<Tile>() == null)
                  {
                      MoveTileDown(tileFromPool, grid[i, j]);
-                     //yield return new WaitForSeconds(0.000001f);
                  }
              }
          }
      }
+     
+     private void CreateBoard()
+     {
+         grid = new GridCell[gridSize, gridSize];
+         grid = gridMaker.GridMaker(gridSize, _tileLength, _tileWidth);
+
+         _tiles = new Tile[gridSize * gridSize];
+         _tiles = tileManager.InstantiateTileArray(gridSize * gridSize);
+        
+         tileManager.InstantiateTilesForPooling(100);
+         tileManager.InstantiatePowerUpTiles();
+        
+         for (int i = 0; i< gridSize; i++)
+         {
+            
+             for (int j = 0; j < gridSize; j++)
+             {
+                 tileManager.SetTilePositionAndIndex(_tiles[(i * gridSize) + j], grid[i, j]);
+                 grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
+                 // if (i >= 2 && _tiles[(i * gridSize) + j].Id == grid[i - 1, j].TileID ||
+                 //     _tiles[(i * gridSize) + j].Id == grid[i - 2, j].TileID)
+                 // {
+                 //     tileManager.SetTilePositionAndIndex(_tiles[Random.Range(0, _tiles.Length)], grid[i, j]);
+                 //     grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
+                 // }
+                 //
+                 // if (j >= 2 && _tiles[(i * gridSize) + j].Id == grid[i, j-1].TileID ||
+                 //     _tiles[(i * gridSize) + j].Id == grid[i, j-2].TileID)
+                 // {
+                 //         tileManager.SetTilePositionAndIndex(_tiles[Random.Range(0, _tiles.Length)], grid[i, j]);
+                 //         grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
+                 // }
+                 // else
+                 // {
+                 //     tileManager.SetTilePositionAndIndex(_tiles[(i * gridSize) + j], grid[i, j]);
+                 //     grid[i, j].TileID = grid[i, j].GetComponentInChildren<Tile>().Id;
+                 // }
+             }
+         }
+     }
+     
      private void MoveTileDown(Tile tileToMove, GridCell finalDestination)
      {
          tileManager.SetTilePositionAndIndex(tileToMove, finalDestination);
-         //tileToMove.transform.DOShakePosition(0.4f, strength: new Vector3(0, 0.2f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
+         tileToMove.transform.DOShakePosition(0.4f, strength: new Vector3(0, 0.2f, 0), vibrato: 5, randomness: 1, snapping: false, fadeOut: true);
          finalDestination.TileID = finalDestination.GetComponentInChildren<Tile>().Id;
      }
 

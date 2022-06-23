@@ -2,6 +2,5 @@
 {
     Init,
     Ready,
-   MakingAMatch,
-    RefillFromPool
+   MakingAMatch
 }
