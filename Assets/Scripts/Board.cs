@@ -4,7 +4,8 @@ using DG.Tweening;
 public class Board : MonoBehaviour
 {
     public static Board Instance;
-    public int gridSize;
+    private int gridSize;
+    
     public GridCell[,] grid;
     public BoardState activeState = BoardState.Init;
     
@@ -15,7 +16,12 @@ public class Board : MonoBehaviour
     private int _tileWidth;
     private Tile[] _tiles;
     private Camera _cam;
-    
+
+    public int GridSize
+    {
+        get { return gridSize; }
+        set { gridSize = value; }
+    }
     private void Awake()
     {
         if (Instance == null)
@@ -32,8 +38,7 @@ public class Board : MonoBehaviour
         // _gridSize = MetaData.Instance.scriptableInstance.rowsCols;
         // _tileLength = MetaData.Instance.scriptableInstance.length;
         // _tileWidth = MetaData.Instance.scriptableInstance.width;
-
-        gridSize = 10;
+        
         _tileLength = 1;
         _tileWidth = 1;
 
