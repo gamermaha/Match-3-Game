@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using DG.Tweening;
@@ -9,6 +10,8 @@ public class TileManager : MonoBehaviour
     [SerializeField] private GameObject poolingContainer;
     [SerializeField] private GameObject powerUpContainer;
     [SerializeField] private Tile tileRef;
+    [SerializeField] private Board boardRef;
+    [SerializeField] private StatsManager statsManager;
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
     [SerializeField] private List<Sprite> powerUps = new List<Sprite>();
 
@@ -17,7 +20,10 @@ public class TileManager : MonoBehaviour
     private Tile _currentSelected = null;
     private int _gridSize = 0;
     private GridCell[,] _grid;
-    private int[] _countsOfTiles = new int[7];
+    private Dictionary<int, int> _countsOfTiles = new Dictionary<int, int>()
+    {
+        {1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
+    };
     
     public Tile[] InstantiateTileArray(int arraySize)
     {
@@ -33,22 +39,22 @@ public class TileManager : MonoBehaviour
 
     public void OnTileClickEnabled()
     {
-        for (int i = 0; i < Board.Instance.GridSize; i++)
+        for (int i = 0; i < boardRef.GridSize; i++)
         {
-            for (int j = 0; j < Board.Instance.GridSize; j++)
+            for (int j = 0; j < boardRef.GridSize; j++)
             {
-                Board.Instance.grid[i,j].GetComponentInChildren<Tile>().OnClick += OnTileClicked;
+                boardRef.grid[i,j].GetComponentInChildren<Tile>().OnClick += OnTileClicked;
             }
         }
     }
 
     public void OnTileClickDisabled()
     {
-        for (int i = 0; i < Board.Instance.GridSize; i++)
+        for (int i = 0; i < boardRef.GridSize; i++)
         {
-            for (int j = 0; j < Board.Instance.GridSize; j++)
+            for (int j = 0; j < boardRef.GridSize; j++)
             {
-                Board.Instance.grid[i,j].GetComponentInChildren<Tile>().OnClick -= OnTileClicked;
+                boardRef.grid[i,j].GetComponentInChildren<Tile>().OnClick -= OnTileClicked;
             }
         } 
     }
@@ -103,7 +109,7 @@ public class TileManager : MonoBehaviour
 
     private void ShrinkTileSizeToZero(Vector2Int index, TweenCallback onComplete)
     {
-        Tile tileToDestroy = Board.Instance.grid[index.x, index.y].GetComponentInChildren<Tile>();
+        Tile tileToDestroy = boardRef.grid[index.x, index.y].GetComponentInChildren<Tile>();
         tileToDestroy.transform.DOScale(0, 0.5f)
             .SetEase(Ease.OutBack)
             .OnComplete(onComplete);
@@ -148,9 +154,9 @@ public class TileManager : MonoBehaviour
     private void SwapTiles(Tile tile1, Tile tile2)
     {
         Vector2Int tempIndex = tile1.Index;
-        SetTilePositionAndIndex(tile1, Board.Instance.grid[tile2.Index.x, tile2.Index.y]);
-        SetTilePositionAndIndex(tile2, Board.Instance.grid[tempIndex.x, tempIndex.y]);
-        Board.Instance.activeState = BoardState.MakingAMatch;
+        SetTilePositionAndIndex(tile1, boardRef.grid[tile2.Index.x, tile2.Index.y]);
+        SetTilePositionAndIndex(tile2, boardRef.grid[tempIndex.x, tempIndex.y]);
+        boardRef.activeState = BoardState.MakingAMatch;
         CheckForMatches(tile1, tile2);
     }
 
@@ -192,13 +198,13 @@ public class TileManager : MonoBehaviour
     {
         if (powerUpTile.Index.x == tileToDestroy.Index.x)
         {
-            SetTilePositionAndIndex(powerUpTile, Board.Instance.grid[powerUpTile.Index.x, powerUpTile.Index.y]);
+            SetTilePositionAndIndex(powerUpTile, boardRef.grid[powerUpTile.Index.x, powerUpTile.Index.y]);
             powerUpTile.transform.SetParent(powerUpContainer.transform, false);
             DestroyRow(tileToDestroy.Index.x);
         }
         else if (powerUpTile.Index.y == tileToDestroy.Index.y)
         {
-            SetTilePositionAndIndex(powerUpTile, Board.Instance.grid[powerUpTile.Index.x, powerUpTile.Index.y]);
+            SetTilePositionAndIndex(powerUpTile, boardRef.grid[powerUpTile.Index.x, powerUpTile.Index.y]);
             powerUpTile.transform.SetParent(powerUpContainer.transform, false);
             DestroyCol(tileToDestroy.Index.y);
         }
@@ -207,13 +213,13 @@ public class TileManager : MonoBehaviour
     private void PowerUpFor5Consecutive(Tile powerUpTile, Tile tileToDestroy)
     {
         powerUpTile.transform.SetParent(powerUpContainer.transform, false);
-        SetTilePositionAndIndex(TakeFromPool(), Board.Instance.grid[powerUpTile.Index.x, powerUpTile.Index.y]);
+        SetTilePositionAndIndex(TakeFromPool(), boardRef.grid[powerUpTile.Index.x, powerUpTile.Index.y]);
         DestroySimilarTile(tileToDestroy.Id);
     }
     
     private void CheckForMatches(Tile tile1, Tile tile2)
     { 
-        Board.Instance.StopTakingInputs();
+        boardRef.StopTakingInputs();
         
         List<Tile> tileList1 = FindMatches(tile1);
         List<Tile> tileList2 = FindMatches(tile2);
@@ -229,25 +235,25 @@ public class TileManager : MonoBehaviour
         List<Tile> matches = tileListFromSwapping;
         while (true)
         { 
-            for (int i = 0; i < Board.Instance.GridSize; i++)
+            for (int i = 0; i < boardRef.GridSize; i++)
             {
-                for (int j = 0; j < Board.Instance.GridSize; j++)
+                for (int j = 0; j < boardRef.GridSize; j++)
                 {
-                    if (Board.Instance.grid[i, j].GetComponentInChildren<Tile>() != null)
-                        matches.AddRange(FindMatches(Board.Instance.grid[i, j].GetComponentInChildren<Tile>()));
+                    if (boardRef.grid[i, j].GetComponentInChildren<Tile>() != null)
+                        matches.AddRange(FindMatches(boardRef.grid[i, j].GetComponentInChildren<Tile>()));
                 }
             }
             DestroyTiles();
             yield return new WaitForSeconds(1f);
-            Board.Instance.MoveTilesDown();
-            Board.Instance.AskFromPool();
+            boardRef.MoveTilesDown();
+            boardRef.AskFromPool();
             yield return new WaitForSeconds(1f);
             
             if (matches.Count == 0)
             {
                 PrintTileCount();
-                Board.Instance.activeState = BoardState.Ready;
-                Board.Instance.StartTakingInputs();
+                boardRef.activeState = BoardState.Ready;
+                boardRef.StartTakingInputs();
                 yield break;
             }
             matches.Clear();
@@ -268,20 +274,20 @@ public class TileManager : MonoBehaviour
         Tile tileToBeChecked;
         for (int i = tile.Index.y - 1; i >= 0; i--)
         {
-            if (Board.Instance.grid[tile.Index.x, i].GetComponentInChildren<Tile>() != null)
+            if (boardRef.grid[tile.Index.x, i].GetComponentInChildren<Tile>() != null)
             {
-                tileToBeChecked = Board.Instance.grid[tile.Index.x, i].GetComponentInChildren<Tile>();
+                tileToBeChecked = boardRef.grid[tile.Index.x, i].GetComponentInChildren<Tile>();
                 if (Equals(tileToBeChecked.Id, tile.Id))
                     tilesMatched.Add(tileToBeChecked);
                 else
                     break;
             }
         }
-        for (int i = tile.Index.y + 1; i < Board.Instance.GridSize; i++)
+        for (int i = tile.Index.y + 1; i < boardRef.GridSize; i++)
         {
-            if (Board.Instance.grid[tile.Index.x, i].GetComponentInChildren<Tile>() != null)
+            if (boardRef.grid[tile.Index.x, i].GetComponentInChildren<Tile>() != null)
             {
-                tileToBeChecked = Board.Instance.grid[tile.Index.x, i].GetComponentInChildren<Tile>();
+                tileToBeChecked = boardRef.grid[tile.Index.x, i].GetComponentInChildren<Tile>();
                 if (Equals(tileToBeChecked.Id, tile.Id))
                     tilesMatched.Add(tileToBeChecked);
                 else
@@ -297,20 +303,20 @@ public class TileManager : MonoBehaviour
         Tile tileToBeChecked = null;
         for (int i = tile.Index.x - 1; i >= 0; i--)
         {
-            if (Board.Instance.grid[i, tile.Index.y].GetComponentInChildren<Tile>() != null)
+            if (boardRef.grid[i, tile.Index.y].GetComponentInChildren<Tile>() != null)
             {
-                tileToBeChecked = Board.Instance.grid[i, tile.Index.y].GetComponentInChildren<Tile>();
+                tileToBeChecked = boardRef.grid[i, tile.Index.y].GetComponentInChildren<Tile>();
                 if (tileToBeChecked.Id == tile.Id)
                     tilesMatched.Add(tileToBeChecked);
                 else
                     break;
             }
         }
-        for (int i = tile.Index.x + 1; i < Board.Instance.GridSize; i++)
+        for (int i = tile.Index.x + 1; i < boardRef.GridSize; i++)
         {
-            if (Board.Instance.grid[i, tile.Index.y].GetComponentInChildren<Tile>() != null)
+            if (boardRef.grid[i, tile.Index.y].GetComponentInChildren<Tile>() != null)
             {
-                tileToBeChecked = Board.Instance.grid[i, tile.Index.y].GetComponentInChildren<Tile>();
+                tileToBeChecked = boardRef.grid[i, tile.Index.y].GetComponentInChildren<Tile>();
                 if (tileToBeChecked.Id == tile.Id)
                     tilesMatched.Add(tileToBeChecked);
                 else
@@ -335,7 +341,7 @@ public class TileManager : MonoBehaviour
 
     private List<Tile> AddSwappedTileToMatches(List<Tile> matchFoundList, Tile tile)
     {
-        Board.Instance.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
+        boardRef.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
         tile.Matched = true;
         matchFoundList.Add(tile);
         return matchFoundList;
@@ -347,7 +353,7 @@ public class TileManager : MonoBehaviour
         {
             for (int l = 0; l < listToBeChecked.Count; l++)
             {
-                Board.Instance.grid[listToBeChecked[l].Index.x, listToBeChecked[l].Index.y].GetComponentInChildren<Tile>().Matched = true;
+                boardRef.grid[listToBeChecked[l].Index.x, listToBeChecked[l].Index.y].GetComponentInChildren<Tile>().Matched = true;
                 listToBeChecked[l].Matched = true;
             }
             if (listToBeChecked.Count >= 4)
@@ -362,22 +368,22 @@ public class TileManager : MonoBehaviour
 
     private void ConvertToPowerUpTile(int powerUpId, Tile tile)
     {
-        UpdateTileCount(tile.Id);
-        Board.Instance.grid[tile.Index.x, tile.Index.y]
+        CallToUpdateStats(tile.Id);
+        boardRef.grid[tile.Index.x, tile.Index.y]
             .GetComponentInChildren<Tile>().transform.SetParent(poolingContainer.transform, false);
-        SetTilePositionAndIndex(powerUpContainer.transform.Find("" + powerUpId).GetComponent<Tile>(), Board.Instance.grid[tile.Index.x,tile.Index.y]);
+        SetTilePositionAndIndex(powerUpContainer.transform.Find("" + powerUpId).GetComponent<Tile>(), boardRef.grid[tile.Index.x,tile.Index.y]);
     }
 
     private void DestroyTiles()
     {
-        for (int i = 0; i < Board.Instance.GridSize; i++)
+        for (int i = 0; i < boardRef.GridSize; i++)
         {
-            for (int j = 0; j < Board.Instance.GridSize; j++)
+            for (int j = 0; j < boardRef.GridSize; j++)
             {
-                Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
+                Tile tile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
                 if (tile != null && tile.Matched)
                 {
-                    UpdateTileCount(tile.Id);
+                    CallToUpdateStats(tile.Id);
                     RemoveTile(tile);
                 }
             }
@@ -386,43 +392,43 @@ public class TileManager : MonoBehaviour
 
     private void DestroyRow(int i)
     {
-        for (int j = 0; j < Board.Instance.GridSize; j++)
+        for (int j = 0; j < boardRef.GridSize; j++)
         {
-            Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
+            Tile tile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
             if (tile != null)
             {
                 // UpdateTileCount(tile.Id);
                 // RemoveTile(tile);
-                Board.Instance.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
+                boardRef.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
             }
         }
     }
     private void DestroyCol(int j)
     {
-        for (int i= 0; i < Board.Instance.GridSize; i++)
+        for (int i= 0; i < boardRef.GridSize; i++)
         {
-            Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
+            Tile tile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
             if (tile != null)
             {
                 // UpdateTileCount(tile.Id);
                 // RemoveTile(tile);
-                Board.Instance.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
+                boardRef.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
             }
         }
     }
 
     private void DestroySimilarTile(int tileID)
     {
-        for (int i = 0; i < Board.Instance.GridSize; i++)
+        for (int i = 0; i < boardRef.GridSize; i++)
         {
-            for (int j= 0; j < Board.Instance.GridSize; j++)
+            for (int j= 0; j < boardRef.GridSize; j++)
             {
-                Tile tile = Board.Instance.grid[i, j].GetComponentInChildren<Tile>();
+                Tile tile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
                 if (tile != null && tile.Id == tileID)
                 {
                     // UpdateTileCount(tile.Id);
                     // RemoveTile(tile);
-                    Board.Instance.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
+                    boardRef.grid[tile.Index.x, tile.Index.y].GetComponentInChildren<Tile>().Matched = true;
                 }
             }
         }
@@ -437,28 +443,20 @@ public class TileManager : MonoBehaviour
     private void SetTileInPoolingContainer(Tile tile)
     {
         int poolingIndex = Random.Range(0, poolingContainer.transform.childCount - 1);
-        Board.Instance.grid[tile.Index.x, tile.Index.y].TileID = -1;
+        boardRef.grid[tile.Index.x, tile.Index.y].TileID = -1;
         tile.transform.SetParent(poolingContainer.transform, false);
         tile.transform.localScale = Vector3.one;
         tile.Matched = false;
         tile.transform.SetSiblingIndex(poolingIndex);
     }
 
-    private void UpdateTileCount(int tileID)
+    private void CallToUpdateStats(int tileID)
     {
-        _countsOfTiles[tileID - 1] += 1;
+        statsManager.UpdateTileCount(tileID);
     }
     
     private void PrintTileCount()
     { 
-        string msg = "";
-        
-            for (int j = 0; j < _countsOfTiles.Length ; j++)
-            {
-                msg += j+1 + ":" + _countsOfTiles[j] + "\t";
-            }
-            msg += "\n";
-        
-        Debug.Log(msg);
+        statsManager.PrintStats();
     }
 }

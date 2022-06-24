@@ -8,8 +8,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Board boardRef;
     // [SerializeField] private GridController gridController;
     // [SerializeField] private MenuManager menuManager;
-    [SerializeField] private Timer timerRef;
-    //
+    
+    private LevelInfo levelInfo;
     
     private void Awake()
     {
@@ -20,18 +20,28 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
+        
+        levelManagerRef.OnRequirementMet += LevelManagerRefOnOnRequirementMet;
+        levelInfo = levelManagerRef.levelInfo;
+    }
+
+    private void LevelManagerRefOnOnRequirementMet(string obj)
+    {
+        Debug.Log(obj+ " requirement met");
     }
 
     private void Start()
     { 
-       LevelInfo levelInfo = levelManagerRef.LoadLevelInfo();
-       boardRef.GridSize = levelInfo.GridSize;
-       Timer timer = Instantiate(timerRef);
-       timer.timeRemaining = levelInfo.TimerValue;
+        levelManagerRef.StartLevel();
     }
 
+    public int GiveGridSize()
+    {
+        return levelInfo.GridSize;
+    }
     
-    
-
-
+    public void TimeEndedIsTrue()
+    {
+        Debug.Log("GameOver");
+    }
 }

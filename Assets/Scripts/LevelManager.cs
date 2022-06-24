@@ -1,20 +1,63 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public LevelInfo LoadLevelInfo()
-    { 
-        LevelInfo levelInfo = new LevelInfo();
+    public event Action<string> OnRequirementMet;
+    public LevelInfo levelInfo;
+    [SerializeField] private Timer timerRef;
+    [SerializeField] private StatsManager statsManager;
+    private Dictionary<int, int> _levelRequirementForTiles = new Dictionary<int, int>()
+    {
+        {1,0}, {2,0}, {3,0}, {4,0}, {5,0}, {6,0}, {7,0}
+    };
+    private Dictionary<int, int> _collectedTiles = new Dictionary<int, int>()
+    {
+        {1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
+    };
 
-        string levelInfoString = File.ReadAllText("D:/Match-3 Game/Assets/Levels/Level01.txt");
-        string[] levelInfoStringContents = levelInfoString.Split(new [] {"#Save-Value#"}, System.StringSplitOptions.None);
-        string[] tilesCountSplit = levelInfoStringContents[1].Split(new [] {"-"}, System.StringSplitOptions.None);
+    private Dictionary<string, bool> _levelRequirementMet = new Dictionary<string, bool>()
+    {
+        {"Timer", false},{"Tile:"+1,false},{"Tile:"+2,false},{"Tile:"+3,false},{"Tile:"+4,false},{"Tile:"+5,false},{"Tile:"+6,false},{"Tile:"+7,false}
+    };
+
+    private void Start()
+    {
+        statsManager.OnTileCountUpdate += OnTileUpdateRequirementCheck;
         
-        levelInfo.TimerValue = Int32.Parse(levelInfoStringContents[0]);
-        levelInfo.TilesCount = new Vector2Int(Int32.Parse(tilesCountSplit[0]), Int32.Parse(tilesCountSplit[1]));
-        levelInfo.GridSize = Int32.Parse(levelInfoStringContents[2]);
-        return levelInfo;
+        for (int i = 1; i <= _levelRequirementForTiles.Count; i++)
+            _levelRequirementForTiles[i] = levelInfo.TilesCount[i - 1].y;
     }
+    
+    public void StartLevel()
+    {
+        StartTimer();
+    }
+    
+    private void StartTimer()
+    {
+        Timer timer = Instantiate(timerRef);
+        timer.timeRemaining = levelInfo.TimerValue;
+        timer.OnTimeEnd += TimerOnOnTimeEnd;
+    }
+
+    private void TimerOnOnTimeEnd()
+    {
+        OnRequirementMet?.Invoke("Timer Ended");
+    }
+
+    private void OnTileUpdateRequirementCheck(int tileId)
+    {
+        _collectedTiles[tileId] += 1;
+        if (_collectedTiles[tileId] >= _levelRequirementForTiles[tileId] && !_levelRequirementMet["Tile:" + tileId])
+        {
+            _levelRequirementMet["Tile:" + tileId] = true;
+            OnRequirementMet?.Invoke("Tile:" + tileId);
+        }
+    }
+    
+    
+    
+    
 }

@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
+    public event Action OnTimeEnd;
     public float timeRemaining;
     public bool timerIsRunning = false;
 
@@ -15,9 +17,10 @@ public class Timer : MonoBehaviour
                 timeRemaining -= Time.deltaTime;
             else
             {
-                Debug.Log("Timer ended");
+                
                 timeRemaining = 0;
                 timerIsRunning = false;
+                OnTimeEnd?.Invoke();
             }
             
         }

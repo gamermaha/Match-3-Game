@@ -3,7 +3,6 @@ using DG.Tweening;
 
 public class Board : MonoBehaviour
 {
-    public static Board Instance;
     private int gridSize;
     
     public GridCell[,] grid;
@@ -22,29 +21,20 @@ public class Board : MonoBehaviour
         get { return gridSize; }
         set { gridSize = value; }
     }
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-        else
-            Destroy(gameObject);
-    }
-
     private void Start()
     {
         // _gridSize = MetaData.Instance.scriptableInstance.rowsCols;
         // _tileLength = MetaData.Instance.scriptableInstance.length;
         // _tileWidth = MetaData.Instance.scriptableInstance.width;
         
+        GridSize = GameManager.Instance.GiveGridSize();
         _tileLength = 1;
         _tileWidth = 1;
 
         _cam = Camera.main;
-        _cam.transform.position = new Vector3(gridSize, gridSize, -60);
-        
+        _cam.transform.position = new Vector3(GridSize, GridSize, -60);
+
+       
         CreateBoard();
         activeState = BoardState.Ready;
         StartTakingInputs();

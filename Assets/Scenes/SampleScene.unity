@@ -153,6 +153,8 @@ MonoBehaviour:
   poolingContainer: {fileID: 636746541}
   powerUpContainer: {fileID: 485465493}
   tileRef: {fileID: 1211709698292603725, guid: 3a86cf238bc503747af8a04f7cc566dc, type: 3}
+  boardRef: {fileID: 814877409}
+  statsManager: {fileID: 587357487}
   sprites:
   - {fileID: 21300000, guid: 093363a40d9c07a4082e1c0f82d20fc3, type: 3}
   - {fileID: 21300000, guid: fbdc2dd4941e61244980c24b6aaea0de, type: 3}
@@ -207,6 +209,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ae8c4177bc3a1e438175934d47858b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelInfo: {fileID: 11400000, guid: b7d72cca59b12fb4f9efc32c7746c05c, type: 2}
+  timerRef: {fileID: 8333498771200661554, guid: c05ef04cfffd76143813f2b0f5340b34,
+    type: 3}
+  statsManager: {fileID: 587357487}
 --- !u!4 &187629282
 Transform:
   m_ObjectHideFlags: 0
@@ -296,6 +302,49 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &587357485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 587357486}
+  - component: {fileID: 587357487}
+  m_Layer: 0
+  m_Name: Stats Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &587357486
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587357485}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &587357487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587357485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470748c186942bb4db9d4bcc08a3f4f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &636746541
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,8 +627,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelManagerRef: {fileID: 187629281}
   boardRef: {fileID: 814877409}
-  timerRef: {fileID: 8333498771200661554, guid: c05ef04cfffd76143813f2b0f5340b34,
-    type: 3}
 --- !u!4 &982232572
 Transform:
   m_ObjectHideFlags: 0
