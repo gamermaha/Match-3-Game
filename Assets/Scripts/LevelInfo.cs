@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelInfo", menuName = "ScriptableObjects/LevelInfo", order = 1)]
 public class LevelInfo : ScriptableObject
@@ -22,6 +21,4 @@ public class LevelInfo : ScriptableObject
    {
       get { return gridSize; }
    }
-   
-   
 }

@@ -19,19 +19,16 @@ public class TileManager : MonoBehaviour
     private Tile _prevSelected = null;
     private Tile _currentSelected = null;
     private int _gridSize = 0;
-    private GridCell[,] _grid;
-    private Dictionary<int, int> _countsOfTiles = new Dictionary<int, int>()
-    {
-        {1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
-    };
-    
+
     public Tile[] InstantiateTileArray(int arraySize)
     {
         Tile[] tileArray = new Tile[arraySize];
         for (int index = 0; index < arraySize; index++)
         {
             Tile newTile = Instantiate(tileRef);
-            SetTileData(newTile);
+            int i = Random.Range(0, sprites.Count);
+            newTile.GetComponent<SpriteRenderer>().sprite = sprites[i];
+            newTile.Id = index + 1;
             tileArray[index] = newTile;
         }
         return tileArray;
@@ -65,7 +62,9 @@ public class TileManager : MonoBehaviour
         {
             Tile newTile = Instantiate(tileRef);
             newTile.transform.SetParent(poolingContainer.transform, false);
-            SetTileData(newTile);
+            int i = Random.Range(0, sprites.Count);
+            newTile.GetComponent<SpriteRenderer>().sprite = sprites[i];
+            newTile.Id = i + 1;
         }
     }
 
@@ -93,11 +92,37 @@ public class TileManager : MonoBehaviour
         return poolingContainer.GetComponentInChildren<Tile>();
     }
     
-    private void SetTileData(Tile tile)
-    { 
-        int index = Random.Range(0, sprites.Count);
-        tile.Sprite = tile.GetComponent<SpriteRenderer>().sprite = sprites[index];
-        tile.Id = index + 1;
+    public void SetTileData(Tile tile)
+    {
+        int[] possibleIDs = {1, 2, 3, 4, 5, 6, 7};
+        Tile prevLeft = null;
+        Tile prevBelow = null;
+        
+        
+        if (tile.Index.x >= 1)
+        {
+            prevLeft = boardRef.grid[tile.Index.x - 1, tile.Index.y].GetComponentInChildren<Tile>();
+        }
+
+        if (tile.Index.y >= 1)
+        {
+            prevBelow = boardRef.grid[tile.Index.x, tile.Index.y-1].GetComponentInChildren<Tile>();
+        }
+
+        if (prevLeft != null)
+        {
+            int id = prevLeft.Id;
+            possibleIDs = possibleIDs.Except(new int[] { id }).ToArray();
+        }
+        if (prevBelow != null)
+        {
+            int id = prevBelow.Id;
+            possibleIDs = possibleIDs.Except(new int[] { id }).ToArray();
+        }
+        
+        int index = possibleIDs[Random.Range(0, possibleIDs.Length)];
+        tile.Sprite = tile.GetComponent<SpriteRenderer>().sprite = sprites[index-1];
+        tile.Id = index;
     }
 
     private void SetPowerUpTileData(Tile tile)
@@ -132,7 +157,10 @@ public class TileManager : MonoBehaviour
     private void OnTileClicked(Tile selectedTile)
     {
         if (_prevSelected == null)
+        {
             Select(selectedTile);
+            Debug.Log("Id of the selected tile is: "+selectedTile.Id);
+        }
         else
         {
             if (selectedTile.Index.x == _prevSelected.Index.x)
@@ -381,7 +409,7 @@ public class TileManager : MonoBehaviour
             for (int j = 0; j < boardRef.GridSize; j++)
             {
                 Tile tile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
-                if (tile != null && tile.Matched)
+                if (tile != null && tile.Matched && tile.Id != 8 && tile.Id != 9)
                 {
                     CallToUpdateStats(tile.Id);
                     RemoveTile(tile);

@@ -1,16 +1,15 @@
-﻿using UnityEngine;
-using UnityEngine.Serialization;
+﻿using System.Collections;
+using eeGames.Widget;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance; 
+    public static GameManager Instance;
     [SerializeField] private LevelManager levelManagerRef;
     [SerializeField] private Board boardRef;
-    // [SerializeField] private GridController gridController;
-    // [SerializeField] private MenuManager menuManager;
     
     private LevelInfo levelInfo;
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -20,28 +19,59 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
-        
+
+        levelManagerRef.OnTileCountUpdate += LevelManagerRefOnOnTileCountUpdate;
         levelManagerRef.OnRequirementMet += LevelManagerRefOnOnRequirementMet;
+        levelManagerRef.OnAllRequirementsMet += LevelManagerRefOnOnAllRequirementsMet;
         levelInfo = levelManagerRef.levelInfo;
     }
 
-    private void LevelManagerRefOnOnRequirementMet(string obj)
+    private void Start()
     {
-        Debug.Log(obj+ " requirement met");
+        WidgetManager.Instance.Push(WidgetName.StartGame);
     }
 
-    private void Start()
-    { 
+    public void StartGamePlay()
+    {
+        var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
+        if (widget != null)
+            widget.SetLevelRequirements(levelInfo);
+        
+        boardRef.gameObject.SetActive(true);
         levelManagerRef.StartLevel();
     }
-
     public int GiveGridSize()
     {
         return levelInfo.GridSize;
     }
-    
-    public void TimeEndedIsTrue()
+
+    public void TimeUp()
     {
-        Debug.Log("GameOver");
+        boardRef.gameObject.SetActive(false);
+    }
+    private void LevelManagerRefOnOnTileCountUpdate(int tileID)
+    {
+        var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
+        if (widget != null)
+        {
+            widget.UpdateTileCount(tileID);
+        }
+    }
+    
+    private void LevelManagerRefOnOnAllRequirementsMet()
+    {
+        var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
+        if (widget != null)
+            widget.AllRequirementsMet();
+        boardRef.gameObject.SetActive(false);
+    }
+
+    private void LevelManagerRefOnOnRequirementMet(int tileID)
+    {
+        var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
+        if (widget != null)
+        {
+            widget.RequirementMet(tileID);
+        }
     }
 }
