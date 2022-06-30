@@ -17,6 +17,7 @@ public class GridController : MonoBehaviour
                 gridCell.transform.position = new Vector3((transform.position.x + (2.5f * tileLength * i)),
                     (transform.position.y + (2.5f * tileWidth * j)), 0);
                 gridCell.Index = new Vector2Int(i,j);
+                gridCell.name = "" + i + "," + j;
                 grid[i, j] = gridCell;
             }
         }

@@ -19,7 +19,7 @@ public class StartGame : Widget
     IEnumerator GotoLevelsScreen()
     {
         yield return new WaitForSeconds(0.5f);
-        WidgetManager.Instance.Push(WidgetName.Levels);
+        WidgetManager.Instance.Push(WidgetName.ScrollView);
     }
     #endregion
     

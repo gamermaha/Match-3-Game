@@ -12,7 +12,7 @@ namespace eeGames.Widget
         GameSetting,
         SaveSetting,
         StartGame,
-        Levels,
+        ScrollView,
         PlayGame, 
         GameOver,
         LevelCompleted

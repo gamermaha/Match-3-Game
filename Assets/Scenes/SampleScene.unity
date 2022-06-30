@@ -152,6 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolingContainer: {fileID: 636746541}
   powerUpContainer: {fileID: 485465493}
+  lockContainer: {fileID: 1097279971}
   tileRef: {fileID: 1211709698292603725, guid: 3a86cf238bc503747af8a04f7cc566dc, type: 3}
   boardRef: {fileID: 814877409}
   statsManager: {fileID: 587357487}
@@ -166,6 +167,7 @@ MonoBehaviour:
   powerUps:
   - {fileID: 21300000, guid: 92c71851e746643458b20da76442dc8a, type: 3}
   - {fileID: 21300000, guid: af4933a09ecf8114b959eaaf33778e4f, type: 3}
+  lockedTileSprite: {fileID: 21300000, guid: 9abfc4479c8f8734892125d9360d1c92, type: 3}
 --- !u!4 &145466123
 Transform:
   m_ObjectHideFlags: 0
@@ -712,6 +714,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1097279971
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1097279972}
+  m_Layer: 0
+  m_Name: Lock Container
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1097279972
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097279971}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1607233425
 GameObject:

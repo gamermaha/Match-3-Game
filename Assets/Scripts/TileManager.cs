@@ -9,11 +9,13 @@ public class TileManager : MonoBehaviour
 {
     [SerializeField] private GameObject poolingContainer;
     [SerializeField] private GameObject powerUpContainer;
+    [SerializeField] private GameObject lockContainer;
     [SerializeField] private Tile tileRef;
     [SerializeField] private Board boardRef;
     [SerializeField] private StatsManager statsManager;
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
     [SerializeField] private List<Sprite> powerUps = new List<Sprite>();
+    [SerializeField] private Sprite lockedTileSprite;
 
     private bool _isSelected = false;
     private Tile _prevSelected = null;
@@ -26,9 +28,18 @@ public class TileManager : MonoBehaviour
         for (int index = 0; index < arraySize; index++)
         {
             Tile newTile = Instantiate(tileRef);
-            int i = Random.Range(0, sprites.Count);
-            newTile.GetComponent<SpriteRenderer>().sprite = sprites[i];
-            newTile.Id = index + 1;
+            if (index == 5 || index == 35 || index == 75)
+            {
+                newTile.GetComponent<SpriteRenderer>().sprite = lockedTileSprite;
+                newTile.Id = 10;
+                newTile.transform.localScale = Vector3.one * 2f;
+            }
+            else
+            {
+                int i = Random.Range(0, sprites.Count);
+                newTile.GetComponent<SpriteRenderer>().sprite = sprites[i];
+                newTile.Id = i + 1;
+            }
             tileArray[index] = newTile;
         }
         return tileArray;
@@ -40,7 +51,9 @@ public class TileManager : MonoBehaviour
         {
             for (int j = 0; j < boardRef.GridSize; j++)
             {
-                boardRef.grid[i,j].GetComponentInChildren<Tile>().OnClick += OnTileClicked;
+                Tile tile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
+                if (tile.Id != 10)
+                    tile.OnClick += OnTileClicked;
             }
         }
     }
@@ -94,35 +107,33 @@ public class TileManager : MonoBehaviour
     
     public void SetTileData(Tile tile)
     {
-        int[] possibleIDs = {1, 2, 3, 4, 5, 6, 7};
-        Tile prevLeft = null;
-        Tile prevBelow = null;
-        
-        
-        if (tile.Index.x >= 1)
+        if (tile.Id != 10)
         {
-            prevLeft = boardRef.grid[tile.Index.x - 1, tile.Index.y].GetComponentInChildren<Tile>();
-        }
+            int[] possibleIDs = {1, 2, 3, 4, 5, 6, 7};
+            Tile prevLeft = null;
+            Tile prevBelow = null;
 
-        if (tile.Index.y >= 1)
-        {
-            prevBelow = boardRef.grid[tile.Index.x, tile.Index.y-1].GetComponentInChildren<Tile>();
-        }
+            if (tile.Index.x >= 1)
+                prevLeft = boardRef.grid[tile.Index.x - 1, tile.Index.y].GetComponentInChildren<Tile>();
+            if (tile.Index.y >= 1)
+                prevBelow = boardRef.grid[tile.Index.x, tile.Index.y - 1].GetComponentInChildren<Tile>();
 
-        if (prevLeft != null)
-        {
-            int id = prevLeft.Id;
-            possibleIDs = possibleIDs.Except(new int[] { id }).ToArray();
+            if (prevLeft != null)
+            {
+                int id = prevLeft.Id;
+                possibleIDs = possibleIDs.Except(new int[] {id}).ToArray();
+            }
+
+            if (prevBelow != null)
+            {
+                int id = prevBelow.Id;
+                possibleIDs = possibleIDs.Except(new int[] {id}).ToArray();
+            }
+
+            int index = possibleIDs[Random.Range(0, possibleIDs.Length)];
+            tile.Sprite = tile.GetComponent<SpriteRenderer>().sprite = sprites[index - 1];
+            tile.Id = index;
         }
-        if (prevBelow != null)
-        {
-            int id = prevBelow.Id;
-            possibleIDs = possibleIDs.Except(new int[] { id }).ToArray();
-        }
-        
-        int index = possibleIDs[Random.Range(0, possibleIDs.Length)];
-        tile.Sprite = tile.GetComponent<SpriteRenderer>().sprite = sprites[index-1];
-        tile.Id = index;
     }
 
     private void SetPowerUpTileData(Tile tile)
@@ -135,7 +146,7 @@ public class TileManager : MonoBehaviour
     private void ShrinkTileSizeToZero(Vector2Int index, TweenCallback onComplete)
     {
         Tile tileToDestroy = boardRef.grid[index.x, index.y].GetComponentInChildren<Tile>();
-        tileToDestroy.transform.DOScale(0, 0.5f)
+        tileToDestroy.transform.DOScale(0, 0.3f)
             .SetEase(Ease.OutBack)
             .OnComplete(onComplete);
     }
@@ -261,14 +272,88 @@ public class TileManager : MonoBehaviour
     IEnumerator FindAllMatches(List<Tile> tileListFromSwapping)
     {
         List<Tile> matches = tileListFromSwapping;
+        List<Tile> interMatches = null;
         while (true)
         { 
             for (int i = 0; i < boardRef.GridSize; i++)
             {
                 for (int j = 0; j < boardRef.GridSize; j++)
                 {
-                    if (boardRef.grid[i, j].GetComponentInChildren<Tile>() != null)
-                        matches.AddRange(FindMatches(boardRef.grid[i, j].GetComponentInChildren<Tile>()));
+                    Tile currentTile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
+                    if (currentTile != null)
+                    {
+                        interMatches = FindMatches(currentTile);
+                        matches.AddRange(interMatches);
+                        if (currentTile.Matched)
+                        {
+                            if (currentTile.Index.x >= 1 && boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]
+                                    .GetComponentInChildren<Tile>() != null && boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]
+                                    .GetComponentInChildren<Tile>().Id == 10)
+                            {
+                                Debug.Log("I am in x-1");
+                                boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]
+                                    .GetComponentInChildren<Tile>().transform.SetParent(lockContainer.transform, false);
+                                SetTilePositionAndIndex(TakeFromPool(), boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]);
+                            }
+
+                            if (currentTile.Index.x < boardRef.GridSize - 1)
+                            {Debug.Log("i am in x<gridsize-1");
+                                if (boardRef
+                                        .grid[currentTile.Index.x + 1, currentTile.Index.y]
+                                        .GetComponentInChildren<Tile>() != null)
+                                {Debug.Log("i am in x<gridsize-1 && !null");
+                                    if (boardRef
+                                            .grid[currentTile.Index.x + 1, currentTile.Index.y]
+                                            .GetComponentInChildren<Tile>().Id == 10)
+                                    {
+                                        Debug.Log("i am in y<gridsize-1 && !null && id =10");
+                                       
+                                        boardRef.grid[currentTile.Index.x + 1, currentTile.Index.y]
+                                            .GetComponentInChildren<Tile>().transform
+                                            .SetParent(lockContainer.transform, false);
+                                        SetTilePositionAndIndex(TakeFromPool(),
+                                            boardRef.grid[currentTile.Index.x + 1, currentTile.Index.y]);
+
+                                    }
+                                }
+                            }
+
+                            if (currentTile.Index.y < boardRef.GridSize - 1)
+                            {
+                                {Debug.Log("i am in y<gridsize-1");
+                                    if (boardRef
+                                            .grid[currentTile.Index.x, currentTile.Index.y + 1]
+                                            .GetComponentInChildren<Tile>() != null)
+                                    {Debug.Log("i am in y<gridsize-1 && !null");
+                                        if (boardRef
+                                                .grid[currentTile.Index.x, currentTile.Index.y + 1]
+                                                .GetComponentInChildren<Tile>().Id == 10)
+                                        {Debug.Log("i am in y<gridsize-1 && !null && id =10");
+                                            boardRef.grid[currentTile.Index.x, currentTile.Index.y + 1]
+                                                .GetComponentInChildren<Tile>().transform
+                                                .SetParent(lockContainer.transform, false);
+                                            SetTilePositionAndIndex(TakeFromPool(),
+                                                boardRef.grid[currentTile.Index.x, currentTile.Index.y + 1]);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (currentTile.Index.y >= 1 && boardRef
+                                    .grid[currentTile.Index.x, currentTile.Index.y - 1]
+                                    .GetComponentInChildren<Tile>() != null && boardRef
+                                    .grid[currentTile.Index.x, currentTile.Index.y - 1]
+                                    .GetComponentInChildren<Tile>().Id == 10)
+                            {
+                                Debug.Log("I am in y-1");
+                                boardRef.grid[currentTile.Index.x, currentTile.Index.y-1]
+                                    .GetComponentInChildren<Tile>().transform.SetParent(lockContainer.transform, false);
+                                SetTilePositionAndIndex(TakeFromPool(), boardRef.grid[currentTile.Index.x, currentTile.Index.y-1]);
+                            }
+                            
+                        }
+                        
+                    }
                 }
             }
             DestroyTiles();
@@ -388,7 +473,10 @@ public class TileManager : MonoBehaviour
                 ConvertToPowerUpTile(9, listToBeChecked[0]);
             else if (listToBeChecked.Count == 3)
                 ConvertToPowerUpTile(8, listToBeChecked[0]);
-            
+            int firstTileX = listToBeChecked[0].Index.x;
+            int firstTileY = listToBeChecked[0].Index.y;
+            int lastTileX = listToBeChecked[listToBeChecked.Count - 1].Index.x;
+            int lastTileY = listToBeChecked[listToBeChecked.Count - 1].Index.y;
             return listToBeChecked;
         }
         return new List<Tile>();

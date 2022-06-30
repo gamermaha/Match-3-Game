@@ -22,7 +22,7 @@ public class LevelCompleted : Widget
     #region Helper Method
     void OnCrossButtonClick()
     {
-        WidgetManager.Instance.Push(WidgetName.Levels);
+        WidgetManager.Instance.Push(WidgetName.ScrollView);
     }
     #endregion
 }

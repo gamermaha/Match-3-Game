@@ -72,26 +72,62 @@ public class Board : MonoBehaviour
 
     public void MoveTilesDown()
     {
+        bool lockedTileInNextCol = false;
+        bool lockedTileInCol = false;
         for (int i = 0; i < gridSize; i++)
         {
-            for (int j = gridSize - 1; j >= 0; j--)
+            for (int j = gridSize-1; j >= 0; j--)
             {
+                if (!lockedTileInCol && grid[i, j].GetComponentInChildren<Tile>() != null && grid[i, j].GetComponentInChildren<Tile>().Id == 10)
+                    lockedTileInCol = true;
+                
+                if (!lockedTileInNextCol && i < gridSize-1 && grid[i+1, j].GetComponentInChildren<Tile>() != null && grid[i+1, j].GetComponentInChildren<Tile>().Id == 10)
+                    lockedTileInNextCol = true;
+                
                 if (grid[i, j].GetComponentInChildren<Tile>() == null)
+                    MoveTileDownOneByOne(i,j);
+                
+                if (lockedTileInNextCol &&
+                    i < gridSize-1 && 
+                    j < gridSize-1 && 
+                    grid[i+1, j].GetComponentInChildren<Tile>() == null &&
+                    grid[i, j+1].GetComponentInChildren<Tile>() != null &&
+                    grid[i, j+1].GetComponentInChildren<Tile>().Id != 10)
                 {
-                    for (int moveDown = j; moveDown <= gridSize - 1; moveDown++)
+                    if (!lockedTileInCol)
                     {
-                        if (moveDown < gridSize - 1 && grid[i, moveDown + 1].GetComponentInChildren<Tile>() != null &&
-                            grid[i, moveDown].GetComponentInChildren<Tile>() == null)
-                        {
-                            MoveTileDown(grid[i, moveDown + 1].GetComponentInChildren<Tile>(),
-                                grid[i, moveDown]);
-                            grid[i, moveDown].TileID = grid[i, moveDown + 1].TileID;
-
-                        }
+                        MoveTileDown(grid[i, j + 1].GetComponentInChildren<Tile>(),
+                            grid[i + 1, j]);
+                        grid[i + 1, j].TileID = grid[i, j + 1].TileID;
+                        MoveTileDownOneByOne(i, j + 1);
+                    }
+                    else if(i < gridSize-2)
+                    {
+                        MoveTileDown(grid[i+2, j+1].GetComponentInChildren<Tile>(),
+                            grid[i+1, j]);
+                        grid[i + 1, j].TileID = grid[i, j + 1].TileID;
+                        MoveTileDownOneByOne(i+2, j + 1);
                     }
                 }
             }
+            lockedTileInCol = false;
+            lockedTileInNextCol = false;
         }
+    }
+
+    private void MoveTileDownOneByOne(int i, int j)
+    {
+        for (int moveDown = j; moveDown <= gridSize - 1; moveDown++)
+        {
+            if (moveDown < gridSize-1 && grid[i, moveDown+1].GetComponentInChildren<Tile>() != null &&
+                grid[i, moveDown].GetComponentInChildren<Tile>() == null && grid[i, moveDown+1].GetComponentInChildren<Tile>().Id != 10)
+            {
+                MoveTileDown(grid[i, moveDown + 1].GetComponentInChildren<Tile>(),
+                    grid[i, moveDown]);
+                grid[i, moveDown].TileID = grid[i, moveDown + 1].TileID;
+            }
+        }
+        
     }
 
     public void AskFromPool()
@@ -133,7 +169,7 @@ public class Board : MonoBehaviour
         }
         for (int i = 0; i < gridSize; i++)
         {
-
+        
             for (int j = 0; j < gridSize; j++)
             {
                 

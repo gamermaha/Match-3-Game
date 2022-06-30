@@ -23,7 +23,7 @@ public class GameOver : Widget
     void OnCrossButtonClick()
     {
         WidgetManager.Instance.Pop(WidgetName.GameOver);
-        WidgetManager.Instance.Push(WidgetName.Levels);
+        WidgetManager.Instance.Push(WidgetName.ScrollView);
     }
     #endregion
 }

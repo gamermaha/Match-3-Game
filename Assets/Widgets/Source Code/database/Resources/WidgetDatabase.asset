@@ -19,11 +19,11 @@ MonoBehaviour:
   - Id: 9
     perfabPath: LevelCompleted
     PoolOnLoad: 1
-  - Id: 6
-    perfabPath: Levels
-    PoolOnLoad: 1
   - Id: 7
     perfabPath: PlayGame
+    PoolOnLoad: 1
+  - Id: 6
+    perfabPath: Scroll Level View
     PoolOnLoad: 1
   - Id: 5
     perfabPath: StartGame
