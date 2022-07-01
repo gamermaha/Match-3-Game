@@ -28,21 +28,19 @@ public class TileManager : MonoBehaviour
         for (int index = 0; index < arraySize; index++)
         {
             Tile newTile = Instantiate(tileRef);
-            if (index == 5 || index == 35 || index == 75)
-            {
-                newTile.GetComponent<SpriteRenderer>().sprite = lockedTileSprite;
-                newTile.Id = 10;
-                newTile.transform.localScale = Vector3.one * 2f;
-            }
-            else
-            {
-                int i = Random.Range(0, sprites.Count);
-                newTile.GetComponent<SpriteRenderer>().sprite = sprites[i];
-                newTile.Id = i + 1;
-            }
+            int i = Random.Range(0, sprites.Count);
+            newTile.GetComponent<SpriteRenderer>().sprite = sprites[i];
+            newTile.Id = i + 1;
             tileArray[index] = newTile;
         }
         return tileArray;
+    }
+
+    public void SetLockedTiles(int i, int j)
+    {
+        Tile lockedTile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
+        lockedTile.Locked = true;
+        lockedTile.GetComponent<SpriteRenderer>().color = new Color(.05f, .05f, .05f, 01f);
     }
 
     public void OnTileClickEnabled()
@@ -52,7 +50,7 @@ public class TileManager : MonoBehaviour
             for (int j = 0; j < boardRef.GridSize; j++)
             {
                 Tile tile = boardRef.grid[i, j].GetComponentInChildren<Tile>();
-                if (tile.Id != 10)
+                if (!tile.Locked)
                     tile.OnClick += OnTileClicked;
             }
         }
@@ -93,6 +91,7 @@ public class TileManager : MonoBehaviour
         }
     }
     
+    
     public void SetTilePositionAndIndex(Tile tile, GridCell gridCell)
     {
         tile.transform.SetParent(gridCell.transform, false);
@@ -107,33 +106,31 @@ public class TileManager : MonoBehaviour
     
     public void SetTileData(Tile tile)
     {
-        if (tile.Id != 10)
+        int[] possibleIDs = {1, 2, 3, 4, 5, 6, 7};
+        Tile prevLeft = null;
+        Tile prevBelow = null;
+
+        if (tile.Index.x >= 1)
+            prevLeft = boardRef.grid[tile.Index.x - 1, tile.Index.y].GetComponentInChildren<Tile>();
+        if (tile.Index.y >= 1)
+            prevBelow = boardRef.grid[tile.Index.x, tile.Index.y - 1].GetComponentInChildren<Tile>();
+
+        if (prevLeft != null)
         {
-            int[] possibleIDs = {1, 2, 3, 4, 5, 6, 7};
-            Tile prevLeft = null;
-            Tile prevBelow = null;
-
-            if (tile.Index.x >= 1)
-                prevLeft = boardRef.grid[tile.Index.x - 1, tile.Index.y].GetComponentInChildren<Tile>();
-            if (tile.Index.y >= 1)
-                prevBelow = boardRef.grid[tile.Index.x, tile.Index.y - 1].GetComponentInChildren<Tile>();
-
-            if (prevLeft != null)
-            {
-                int id = prevLeft.Id;
-                possibleIDs = possibleIDs.Except(new int[] {id}).ToArray();
-            }
-
-            if (prevBelow != null)
-            {
-                int id = prevBelow.Id;
-                possibleIDs = possibleIDs.Except(new int[] {id}).ToArray();
-            }
-
-            int index = possibleIDs[Random.Range(0, possibleIDs.Length)];
-            tile.Sprite = tile.GetComponent<SpriteRenderer>().sprite = sprites[index - 1];
-            tile.Id = index;
+            int id = prevLeft.Id;
+            possibleIDs = possibleIDs.Except(new int[] {id}).ToArray();
         }
+
+        if (prevBelow != null)
+        {
+            int id = prevBelow.Id;
+            possibleIDs = possibleIDs.Except(new int[] {id}).ToArray();
+        }
+
+        int index = possibleIDs[Random.Range(0, possibleIDs.Length)];
+        tile.Sprite = tile.GetComponent<SpriteRenderer>().sprite = sprites[index - 1];
+        tile.Id = index;
+        
     }
 
     private void SetPowerUpTileData(Tile tile)
@@ -170,7 +167,6 @@ public class TileManager : MonoBehaviour
         if (_prevSelected == null)
         {
             Select(selectedTile);
-            Debug.Log("Id of the selected tile is: "+selectedTile.Id);
         }
         else
         {
@@ -288,12 +284,13 @@ public class TileManager : MonoBehaviour
                         {
                             if (currentTile.Index.x >= 1 && boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]
                                     .GetComponentInChildren<Tile>() != null && boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]
-                                    .GetComponentInChildren<Tile>().Id == 10)
+                                    .GetComponentInChildren<Tile>().Locked)
                             {
                                 Debug.Log("I am in x-1");
                                 boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]
-                                    .GetComponentInChildren<Tile>().transform.SetParent(lockContainer.transform, false);
-                                SetTilePositionAndIndex(TakeFromPool(), boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]);
+                                    .GetComponentInChildren<Tile>().Locked = false;
+                                boardRef.grid[currentTile.Index.x - 1, currentTile.Index.y]
+                                    .GetComponentInChildren<Tile>().GetComponent<SpriteRenderer>().color = Color.white;
                             }
 
                             if (currentTile.Index.x < boardRef.GridSize - 1)
@@ -304,16 +301,13 @@ public class TileManager : MonoBehaviour
                                 {Debug.Log("i am in x<gridsize-1 && !null");
                                     if (boardRef
                                             .grid[currentTile.Index.x + 1, currentTile.Index.y]
-                                            .GetComponentInChildren<Tile>().Id == 10)
+                                            .GetComponentInChildren<Tile>().Locked)
                                     {
                                         Debug.Log("i am in y<gridsize-1 && !null && id =10");
                                        
                                         boardRef.grid[currentTile.Index.x + 1, currentTile.Index.y]
-                                            .GetComponentInChildren<Tile>().transform
-                                            .SetParent(lockContainer.transform, false);
-                                        SetTilePositionAndIndex(TakeFromPool(),
-                                            boardRef.grid[currentTile.Index.x + 1, currentTile.Index.y]);
-
+                                            .GetComponentInChildren<Tile>().Locked =  false;
+                                        boardRef.grid[currentTile.Index.x + 1, currentTile.Index.y].GetComponentInChildren<Tile>().GetComponent<SpriteRenderer>().color = Color.white;
                                     }
                                 }
                             }
@@ -327,13 +321,12 @@ public class TileManager : MonoBehaviour
                                     {Debug.Log("i am in y<gridsize-1 && !null");
                                         if (boardRef
                                                 .grid[currentTile.Index.x, currentTile.Index.y + 1]
-                                                .GetComponentInChildren<Tile>().Id == 10)
+                                                .GetComponentInChildren<Tile>().Locked)
                                         {Debug.Log("i am in y<gridsize-1 && !null && id =10");
                                             boardRef.grid[currentTile.Index.x, currentTile.Index.y + 1]
-                                                .GetComponentInChildren<Tile>().transform
-                                                .SetParent(lockContainer.transform, false);
-                                            SetTilePositionAndIndex(TakeFromPool(),
-                                                boardRef.grid[currentTile.Index.x, currentTile.Index.y + 1]);
+                                                .GetComponentInChildren<Tile>().Locked = false;
+                                            boardRef.grid[currentTile.Index.x, currentTile.Index.y + 1]
+                                                .GetComponentInChildren<Tile>().GetComponent<SpriteRenderer>().color = Color.white;
                                         }
                                     }
                                 }
@@ -343,12 +336,13 @@ public class TileManager : MonoBehaviour
                                     .grid[currentTile.Index.x, currentTile.Index.y - 1]
                                     .GetComponentInChildren<Tile>() != null && boardRef
                                     .grid[currentTile.Index.x, currentTile.Index.y - 1]
-                                    .GetComponentInChildren<Tile>().Id == 10)
+                                    .GetComponentInChildren<Tile>().Locked)
                             {
                                 Debug.Log("I am in y-1");
                                 boardRef.grid[currentTile.Index.x, currentTile.Index.y-1]
-                                    .GetComponentInChildren<Tile>().transform.SetParent(lockContainer.transform, false);
-                                SetTilePositionAndIndex(TakeFromPool(), boardRef.grid[currentTile.Index.x, currentTile.Index.y-1]);
+                                    .GetComponentInChildren<Tile>().Locked = false;
+                                boardRef.grid[currentTile.Index.x, currentTile.Index.y-1]
+                                    .GetComponentInChildren<Tile>().GetComponent<SpriteRenderer>().color = Color.white;
                             }
                             
                         }

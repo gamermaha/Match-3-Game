@@ -8,7 +8,7 @@ public class Levels : Widget
 {
     
     [SerializeField] private Button level1Button;
-    private int current_level = 17;
+    private int current_level = 1;
     private ScrollRect _scrollRect;
     #region UNity Methods
     protected override void Awake()

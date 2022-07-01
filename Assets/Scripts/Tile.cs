@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour
     private int id;
     private Sprite sprite;
     private bool matched = false;
+    private bool locked = false;
     
     public Vector2Int Index
     {
@@ -32,6 +33,12 @@ public class Tile : MonoBehaviour
     {
         get { return matched; }
         set { matched = value; }
+    }
+    
+    public bool Locked
+    {
+        get { return locked; }
+        set { locked = value; }
     }
     
     private void OnMouseDown()

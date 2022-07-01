@@ -78,10 +78,10 @@ public class Board : MonoBehaviour
         {
             for (int j = gridSize-1; j >= 0; j--)
             {
-                if (!lockedTileInCol && grid[i, j].GetComponentInChildren<Tile>() != null && grid[i, j].GetComponentInChildren<Tile>().Id == 10)
+                if (!lockedTileInCol && grid[i, j].GetComponentInChildren<Tile>() != null && grid[i, j].GetComponentInChildren<Tile>().Locked)
                     lockedTileInCol = true;
                 
-                if (!lockedTileInNextCol && i < gridSize-1 && grid[i+1, j].GetComponentInChildren<Tile>() != null && grid[i+1, j].GetComponentInChildren<Tile>().Id == 10)
+                if (!lockedTileInNextCol && i < gridSize-1 && grid[i+1, j].GetComponentInChildren<Tile>() != null && grid[i+1, j].GetComponentInChildren<Tile>().Locked)
                     lockedTileInNextCol = true;
                 
                 if (grid[i, j].GetComponentInChildren<Tile>() == null)
@@ -92,7 +92,7 @@ public class Board : MonoBehaviour
                     j < gridSize-1 && 
                     grid[i+1, j].GetComponentInChildren<Tile>() == null &&
                     grid[i, j+1].GetComponentInChildren<Tile>() != null &&
-                    grid[i, j+1].GetComponentInChildren<Tile>().Id != 10)
+                    !grid[i, j+1].GetComponentInChildren<Tile>().Locked)
                 {
                     if (!lockedTileInCol)
                     {
@@ -120,7 +120,7 @@ public class Board : MonoBehaviour
         for (int moveDown = j; moveDown <= gridSize - 1; moveDown++)
         {
             if (moveDown < gridSize-1 && grid[i, moveDown+1].GetComponentInChildren<Tile>() != null &&
-                grid[i, moveDown].GetComponentInChildren<Tile>() == null && grid[i, moveDown+1].GetComponentInChildren<Tile>().Id != 10)
+                grid[i, moveDown].GetComponentInChildren<Tile>() == null && !grid[i, moveDown+1].GetComponentInChildren<Tile>().Locked)
             {
                 MoveTileDown(grid[i, moveDown + 1].GetComponentInChildren<Tile>(),
                     grid[i, moveDown]);
@@ -169,14 +169,15 @@ public class Board : MonoBehaviour
         }
         for (int i = 0; i < gridSize; i++)
         {
-        
             for (int j = 0; j < gridSize; j++)
-            {
-                
                 tileManager.SetTileData(grid[i,j].GetComponentInChildren<Tile>());
-            }
         }
-        
+        tileManager.SetLockedTiles(0,5);
+        tileManager.SetLockedTiles(2,3);
+        tileManager.SetLockedTiles(5,6);
+        tileManager.SetLockedTiles(7,7);
+        tileManager.SetLockedTiles(5,4);
+        tileManager.SetLockedTiles(9,9);
     }
 
     private void MoveTileDown(Tile tileToMove, GridCell finalDestination)
@@ -186,5 +187,4 @@ public class Board : MonoBehaviour
             snapping: false, fadeOut: true);
         finalDestination.TileID = finalDestination.GetComponentInChildren<Tile>().Id;
     }
-
 }
