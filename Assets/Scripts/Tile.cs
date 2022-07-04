@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    #region Variables
+
     public event Action<Tile> OnClick;
     
     private Vector2Int index;
@@ -10,7 +12,12 @@ public class Tile : MonoBehaviour
     private Sprite sprite;
     private bool matched = false;
     private bool locked = false;
-    
+
+
+    #endregion
+
+    #region Properties
+
     public Vector2Int Index
     {
         get { return index; }
@@ -40,9 +47,17 @@ public class Tile : MonoBehaviour
         get { return locked; }
         set { locked = value; }
     }
-    
+
+
+    #endregion
+
+    #region Method
+
     private void OnMouseDown()
     {
         OnClick?.Invoke(this);
     }
+
+    #endregion
+   
 }

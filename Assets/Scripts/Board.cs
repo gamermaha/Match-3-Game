@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 
 public class Board : MonoBehaviour
 {
+    #region Variables
+
     private int gridSize;
 
     public GridCell[,] grid;
@@ -17,18 +18,21 @@ public class Board : MonoBehaviour
     private Tile[] _tiles;
     private Camera _cam;
 
+    #endregion
+
+
+    #region Properties
+
     public int GridSize
-    {
+    { 
         get { return gridSize; }
         set { gridSize = value; }
     }
+    #endregion
+
 
     private void Start()
     {
-        // _gridSize = MetaData.Instance.scriptableInstance.rowsCols;
-        // _tileLength = MetaData.Instance.scriptableInstance.length;
-        // _tileWidth = MetaData.Instance.scriptableInstance.width;
-
         GridSize = GameManager.Instance.GiveGridSize();
         _tileLength = 1;
         _tileWidth = 1;
@@ -172,12 +176,26 @@ public class Board : MonoBehaviour
             for (int j = 0; j < gridSize; j++)
                 tileManager.SetTileData(grid[i,j].GetComponentInChildren<Tile>());
         }
-        tileManager.SetLockedTiles(0,5);
-        tileManager.SetLockedTiles(2,3);
-        tileManager.SetLockedTiles(5,6);
-        tileManager.SetLockedTiles(7,7);
+        tileManager.SetLockedTiles(0,4);
+        tileManager.SetLockedTiles(1,4);
+        tileManager.SetLockedTiles(2,4);
+        tileManager.SetLockedTiles(3,4);
+        tileManager.SetLockedTiles(4,4);
         tileManager.SetLockedTiles(5,4);
-        tileManager.SetLockedTiles(9,9);
+        tileManager.SetLockedTiles(6,4);
+        tileManager.SetLockedTiles(7,4);
+        tileManager.SetLockedTiles(8,4);
+        tileManager.SetLockedTiles(9,4);
+        tileManager.SetLockedTiles(4,0);
+        tileManager.SetLockedTiles(4,1);
+        tileManager.SetLockedTiles(4,2);
+        tileManager.SetLockedTiles(4,3);
+        tileManager.SetLockedTiles(4,4);
+        tileManager.SetLockedTiles(4,5);
+        tileManager.SetLockedTiles(4,6);
+        tileManager.SetLockedTiles(4,7);
+        tileManager.SetLockedTiles(4,8);
+        tileManager.SetLockedTiles(4,9);
     }
 
     private void MoveTileDown(Tile tileToMove, GridCell finalDestination)
