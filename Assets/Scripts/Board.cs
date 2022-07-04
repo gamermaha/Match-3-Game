@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Video;
 
 public class Board : MonoBehaviour
 {
@@ -30,7 +33,6 @@ public class Board : MonoBehaviour
     }
     #endregion
 
-
     private void Start()
     {
         GridSize = GameManager.Instance.GiveGridSize();
@@ -41,8 +43,14 @@ public class Board : MonoBehaviour
         _cam.transform.position = new Vector3(15.5f, 11, -36);
 
         CreateBoard();
+        PopulateBoardWithTiles();
         activeState = BoardState.Ready;
         StartTakingInputs();
+    }
+
+    private void OnDisable()
+    {
+        PopulateWithLockedTiles();
     }
 
     public void StartTakingInputs()
@@ -155,6 +163,10 @@ public class Board : MonoBehaviour
         grid = gridMaker.GridMaker(gridSize, _tileLength, _tileWidth);
 
         gridMaker.gameObject.transform.SetParent(transform);
+    }
+
+    private void PopulateBoardWithTiles()
+    {
         _tiles = new Tile[gridSize * gridSize];
         _tiles = tileManager.InstantiateTileArray(gridSize * gridSize);
 
@@ -176,6 +188,11 @@ public class Board : MonoBehaviour
             for (int j = 0; j < gridSize; j++)
                 tileManager.SetTileData(grid[i,j].GetComponentInChildren<Tile>());
         }
+        PopulateWithLockedTiles();
+    }
+
+    private void PopulateWithLockedTiles()
+    {
         tileManager.SetLockedTiles(0,4);
         tileManager.SetLockedTiles(1,4);
         tileManager.SetLockedTiles(2,4);
@@ -185,7 +202,7 @@ public class Board : MonoBehaviour
         tileManager.SetLockedTiles(6,4);
         tileManager.SetLockedTiles(7,4);
         tileManager.SetLockedTiles(8,4);
-        tileManager.SetLockedTiles(9,4);
+        //tileManager.SetLockedTiles(9,4);
         tileManager.SetLockedTiles(4,0);
         tileManager.SetLockedTiles(4,1);
         tileManager.SetLockedTiles(4,2);
@@ -195,7 +212,18 @@ public class Board : MonoBehaviour
         tileManager.SetLockedTiles(4,6);
         tileManager.SetLockedTiles(4,7);
         tileManager.SetLockedTiles(4,8);
-        tileManager.SetLockedTiles(4,9);
+        //tileManager.SetLockedTiles(4,9);
+    }
+    private void EmptyBoard()
+    {
+        for (int i = 0; i < gridSize; i++)
+        {
+
+            for (int j = 0; j < gridSize; j++)
+            {
+                Destroy(grid[i,j].transform.GetChild(0).gameObject);
+            }
+        }
     }
 
     private void MoveTileDown(Tile tileToMove, GridCell finalDestination)

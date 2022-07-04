@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     public void TimeUp()
     {
         boardRef.gameObject.SetActive(false);
+        //StartCoroutine(boardRef.Griddd());
     }
     private void LevelManagerRefOnOnTileCountUpdate(int tileID)
     {

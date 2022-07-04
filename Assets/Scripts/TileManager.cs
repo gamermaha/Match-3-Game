@@ -11,7 +11,6 @@ public class TileManager : MonoBehaviour
 
     [SerializeField] private GameObject poolingContainer;
     [SerializeField] private GameObject powerUpContainer;
-    [SerializeField] private GameObject lockContainer;
     [SerializeField] private Tile tileRef;
     [SerializeField] private Board boardRef;
     [SerializeField] private StatsManager statsManager;
@@ -358,14 +357,14 @@ public class TileManager : MonoBehaviour
                 }
             }
             DestroyTiles();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.3f);
             boardRef.MoveTilesDown();
             boardRef.AskFromPool();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.3f);
             
             if (matches.Count == 0)
             {
-                PrintTileCount();
+                //PrintTileCount();
                 boardRef.activeState = BoardState.Ready;
                 boardRef.StartTakingInputs();
                 yield break;
@@ -580,5 +579,4 @@ public class TileManager : MonoBehaviour
         }
 
         #endregion
-        
 }
