@@ -216,6 +216,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 827617f65a671d846bb1cfa644c773ed, type: 2}
   - {fileID: 11400000, guid: 724db66494c27d145b84d96aae7ebfcb, type: 2}
   - {fileID: 11400000, guid: 3f8d0b47c4de5014ca9cdca1494edb4d, type: 2}
+  - {fileID: 11400000, guid: 61799a410abfba04e8e704c53bd28088, type: 2}
+  - {fileID: 11400000, guid: e0be5aaac958fcb4a9c467da0da65549, type: 2}
+  - {fileID: 11400000, guid: b3b66eeafec467e4fae9be13049302a2, type: 2}
+  - {fileID: 11400000, guid: 4d0c5199ecbc5d240b9311b2653c4ce2, type: 2}
   timerRef: {fileID: 8333498771200661554, guid: c05ef04cfffd76143813f2b0f5340b34,
     type: 3}
   statsManager: {fileID: 587357487}

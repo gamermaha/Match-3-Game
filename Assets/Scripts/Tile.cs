@@ -56,12 +56,14 @@ public class Tile : MonoBehaviour, IPointerDownHandler
 
     private void OnMouseDown()
     {
-        OnClick?.Invoke(this);
+        if (!GameManager.Instance.timeUp)
+            OnClick?.Invoke(this);
     }
     
     public void OnPointerDown(PointerEventData eventData)
     {
-        OnClick?.Invoke(this);
+        if (!GameManager.Instance.timeUp)
+            OnClick?.Invoke(this);
     }
     #endregion
 }

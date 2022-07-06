@@ -80,13 +80,15 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator OnLevelComplete()
     {
+        
         boardRef.activeState = BoardState.Init;
         yield return new WaitForSeconds(2f);
         BoardSetInactive();
+        levelManagerRef.DestroyTimer();
         var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
         if (widget != null)
             widget.AllRequirementsMet();
-        
+        timeUp = false;
     }
 
     public IEnumerator OnTimeUp()
@@ -95,6 +97,7 @@ public class GameManager : MonoBehaviour
         boardRef.activeState = BoardState.Init;
         yield return new WaitForSeconds(2f);
         BoardSetInactive();
+        levelManagerRef.DestroyTimer();
         var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
         if (widget != null)
             widget.TimeUp();

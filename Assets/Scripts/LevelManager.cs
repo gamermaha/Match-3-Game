@@ -10,12 +10,12 @@ public class LevelManager : MonoBehaviour
     public event Action<int> OnTileCountUpdate;
     public LevelInfo currentLevel;
     public event Action OnAllRequirementsMet;
-    [FormerlySerializedAs("levelInfo")] public List<LevelInfo> levelsInfo;
+    public List<LevelInfo> levelsInfo;
 
     [SerializeField] private Timer timerRef;
     [SerializeField] private StatsManager statsManager;
     private int _currentLevelValue;
-    private Timer timer = null;
+    private Timer timer;
     
     private Dictionary<int, int> _levelRequirementForTiles = new Dictionary<int, int>()
     {
@@ -91,9 +91,12 @@ public class LevelManager : MonoBehaviour
     {
         _currentLevelValue++;
         SaveLevel();
-        Destroy(timer.gameObject);
     }
 
+    public void DestroyTimer()
+    {
+        Destroy(timer.gameObject);
+    }
     public void UpdateLevelOnLevelsMenu()
     {
         var widget = WidgetManager.Instance.GetWidget(WidgetName.ScrollView) as Levels;
@@ -112,11 +115,11 @@ public class LevelManager : MonoBehaviour
     private void SetLevelInfoForCurrentLevel()
     {
         Debug.Log(_currentLevelValue);
-        if (_currentLevelValue <= 4)
+        if (_currentLevelValue <= 8)
             currentLevel = levelsInfo[_currentLevelValue - 1];
-        else if (_currentLevelValue >= 5)
+        else if (_currentLevelValue >= 9)
         {
-            currentLevel = levelsInfo[3];
+            currentLevel = levelsInfo[7];
         }
     }
 

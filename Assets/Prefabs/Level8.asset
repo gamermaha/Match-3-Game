@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d93175aa5150a44ca4fcf500418ebd9, type: 3}
-  m_Name: Level4
+  m_Name: Level8
   m_EditorClassIdentifier: 
   timerValue: 40
   tilesCount:
-  - {x: 1, y: 3}
-  - {x: 2, y: 3}
+  - {x: 1, y: 7}
+  - {x: 2, y: 7}
   - {x: 3, y: 7}
   - {x: 4, y: 3}
   - {x: 5, y: 3}
   - {x: 6, y: 6}
-  - {x: 7, y: 3}
+  - {x: 7, y: 7}
   gridSize: 9

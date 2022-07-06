@@ -99,9 +99,12 @@ public class TileManager : MonoBehaviour
     
     public void SetTilePositionAndIndex(Tile tile, GridCell gridCell)
     {
-        tile.transform.SetParent(gridCell.transform, false);
-        tile.transform.localPosition = new Vector3(0, 0, 0);
-        tile.Index = gridCell.Index;
+        if (gridCell != null)
+        {
+            tile.transform.SetParent(gridCell.transform, false);
+            tile.transform.localPosition = new Vector3(0, 0, 0);
+            tile.Index = gridCell.Index;
+        }
     }
     
     public Tile TakeFromPool()
@@ -573,9 +576,7 @@ public class TileManager : MonoBehaviour
         tile.Matched = false;
         tile.transform.SetSiblingIndex(poolingIndex);
     }
-        
-
-        #endregion
+    #endregion
 
     #region Stats
 
@@ -589,5 +590,5 @@ public class TileManager : MonoBehaviour
             statsManager.PrintStats();
         }
 
-        #endregion
+    #endregion
 }

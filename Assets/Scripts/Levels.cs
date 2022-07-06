@@ -1,41 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using eeGames.Widget;
-using TMPro;
+﻿using eeGames.Widget;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Levels : Widget
 {
-    
-    [SerializeField] private Button level1Button;
-    [SerializeField] private Button level2Button;
-    [SerializeField] private Button level3Button;
-    [SerializeField] private Button level4Button;
-
-    [SerializeField] private TextMeshProUGUI text;
-    
-
-    private int _currentLevel = 1;
     private ScrollRect _scrollRect;
     #region UNity Methods
-    protected override void Awake()
-    {
-        // level1Button.onClick.AddListener(OnLevel1ButtonClick);
-        // level2Button.onClick.AddListener(OnLevel2ButtonClick);
-        // level3Button.onClick.AddListener(OnLevel3ButtonClick);
-        // level4Button.onClick.AddListener(OnLevel4ButtonClick);
-        //scrollRect = GetComponent<ScrollRect>();
-    }
-
+    
     public void SetPosition(int currentLevel)
     {
         _scrollRect = GetComponent<ScrollRect>();
         if (_scrollRect != null)
         {
-            _scrollRect.verticalNormalizedPosition = currentLevel * 0.04f;
+            _scrollRect.verticalNormalizedPosition = currentLevel * 0.05f;
             Debug.Log(_scrollRect.verticalNormalizedPosition);
         }
         Transform level = transform.GetChild(0);
@@ -48,10 +25,6 @@ public class Levels : Widget
     
     void OnDestroy()
     {
-        // level1Button.onClick.RemoveListener(OnLevel1ButtonClick);
-        // level2Button.onClick.RemoveListener(OnLevel2ButtonClick);
-        // level3Button.onClick.RemoveListener(OnLevel3ButtonClick);
-        // level4Button.onClick.RemoveListener(OnLevel4ButtonClick);
         base.DestroyWidget();
     }
 
@@ -77,15 +50,30 @@ public class Levels : Widget
     {
         GameManager.Instance.SetLevelValue(4);
     }
+    
+    public void OnLevel5ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(5);
+    }
+    
+    public void OnLevel6ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(6);
+    }
+    
+    public void OnLevel7ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(7);
+    }
+    
+    public void OnLevel8ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(8);
+    }
 
     public void LoadPlayGameScreen()
     {
         WidgetManager.Instance.Push(WidgetName.PlayGame);
-    }
-
-    public void ShowNotLoadingText()
-    {
-        text.color = Color.black;
     }
     #endregion
 }
