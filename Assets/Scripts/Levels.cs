@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using eeGames.Widget;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -8,12 +11,22 @@ public class Levels : Widget
 {
     
     [SerializeField] private Button level1Button;
-    private int current_level = 1;
+    [SerializeField] private Button level2Button;
+    [SerializeField] private Button level3Button;
+    [SerializeField] private Button level4Button;
+
+    [SerializeField] private TextMeshProUGUI text;
+    
+
+    private int _currentLevel = 1;
     private ScrollRect _scrollRect;
     #region UNity Methods
     protected override void Awake()
     {
-        level1Button.onClick.AddListener(OnLevel1ButtonClick);
+        // level1Button.onClick.AddListener(OnLevel1ButtonClick);
+        // level2Button.onClick.AddListener(OnLevel2ButtonClick);
+        // level3Button.onClick.AddListener(OnLevel3ButtonClick);
+        // level4Button.onClick.AddListener(OnLevel4ButtonClick);
         //scrollRect = GetComponent<ScrollRect>();
     }
 
@@ -22,29 +35,64 @@ public class Levels : Widget
         _scrollRect = GetComponent<ScrollRect>();
         if (_scrollRect != null)
         {
-            if (current_level >= 1 && current_level <= 6)
+            if (_currentLevel >= 1 && _currentLevel <= 6)
+            {
                 _scrollRect.verticalNormalizedPosition = 0f;
-            else if (current_level >= 7 && current_level <= 11)
+            }
+            else if (_currentLevel >= 7 && _currentLevel <= 11)
+            {
                 _scrollRect.verticalNormalizedPosition = 0.4925f;
-            else if (current_level >= 12 && current_level <= 18)
+            }
+            else if (_currentLevel >= 12 && _currentLevel <= 18)
+            {
                 _scrollRect.verticalNormalizedPosition = 0.97f;
+               
+            }
             
         }
     }
 
+    
     void OnDestroy()
     {
-        level1Button.onClick.RemoveListener(OnLevel1ButtonClick);
+        // level1Button.onClick.RemoveListener(OnLevel1ButtonClick);
+        // level2Button.onClick.RemoveListener(OnLevel2ButtonClick);
+        // level3Button.onClick.RemoveListener(OnLevel3ButtonClick);
+        // level4Button.onClick.RemoveListener(OnLevel4ButtonClick);
         base.DestroyWidget();
     }
 
     #endregion
 
-    #region Helper Method
-    void OnLevel1ButtonClick()
+    #region Helper Methods
+    public void OnLevel1ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(1);
+    }
+    
+    public void OnLevel2ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(2);
+    }
+    
+    public void OnLevel3ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(3);
+    }
+    
+    public void OnLevel4ButtonClick()
+    {
+        GameManager.Instance.SetLevelValue(4);
+    }
+
+    public void LoadPlayGameScreen()
     {
         WidgetManager.Instance.Push(WidgetName.PlayGame);
-        GameManager.Instance.StartGamePlay();
+    }
+
+    public void ShowNotLoadingText()
+    {
+        text.color = Color.black;
     }
     #endregion
 }

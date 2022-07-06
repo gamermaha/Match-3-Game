@@ -631,7 +631,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6032248207721610695}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3934965001930118134}
+        m_MethodName: OnLevel3ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2360269479900758100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1928,7 +1939,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5444525638435261444}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3934965001930118134}
+        m_MethodName: OnLevel2ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6204825439413449084
 GameObject:
   m_ObjectHideFlags: 0
@@ -2872,7 +2894,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3943871658630891297}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3934965001930118134}
+        m_MethodName: OnLevel4ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8194375354296437919
 GameObject:
   m_ObjectHideFlags: 0
@@ -3110,7 +3143,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3484197448597084888}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3934965001930118134}
+        m_MethodName: OnLevel1ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8477678238506034534
 GameObject:
   m_ObjectHideFlags: 0
@@ -3671,3 +3715,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   level1Button: {fileID: 7681349704969811143}
+  level2Button: {fileID: 3896926082087494067}
+  level3Button: {fileID: 8841162021250193602}
+  level4Button: {fileID: 8806072432092273271}
+  text: {fileID: 0}

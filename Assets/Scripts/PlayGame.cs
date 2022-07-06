@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using eeGames.Widget;
 using TMPro;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,9 +47,6 @@ public class PlayGame : Widget
             float seconds = Mathf.FloorToInt(time % 60);
             timerValue.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
-        else 
-            TimeUp();
-        
     }
 
     public void RequirementMet(int tileID)

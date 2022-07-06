@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.Video;
+
 
 public class Board : MonoBehaviour
 {
@@ -12,14 +13,14 @@ public class Board : MonoBehaviour
 
     public GridCell[,] grid;
     public BoardState activeState = BoardState.Init;
-
+    public CameraController cameraController;
     [SerializeField] private GridController gridMaker;
     [SerializeField] private TileManager tileManager;
 
     private int _tileLength;
     private int _tileWidth;
     private Tile[] _tiles;
-    private Camera _cam;
+    
 
     #endregion
 
@@ -33,14 +34,14 @@ public class Board : MonoBehaviour
     }
     #endregion
 
-    private void Start()
+    private void OnEnable()
     {
         GridSize = GameManager.Instance.GiveGridSize();
         _tileLength = 1;
         _tileWidth = 1;
-
-        _cam = Camera.main;
-        _cam.transform.position = new Vector3(15.5f, 11, -36);
+        
+        cameraController.SetCamera(GridSize);
+        
 
         CreateBoard();
         PopulateBoardWithTiles();
@@ -50,12 +51,18 @@ public class Board : MonoBehaviour
 
     private void OnDisable()
     {
-        PopulateWithLockedTiles();
+        StopCoroutine(tileManager.FindAllMatches(new List<Tile>()));
+        //EmptyBoard();
+        for (int i = 0; i < GridSize*GridSize; i++)
+        {
+            Destroy(transform.GetChild(0).transform.GetChild(i).gameObject);
+        }
     }
 
     public void StartTakingInputs()
     {
-        tileManager.OnTileClickEnabled();
+        if (activeState == BoardState.Ready)
+            tileManager.OnTileClickEnabled();
     }
 
     public void StopTakingInputs()
@@ -193,33 +200,79 @@ public class Board : MonoBehaviour
 
     private void PopulateWithLockedTiles()
     {
-        tileManager.SetLockedTiles(0,4);
-        tileManager.SetLockedTiles(1,4);
-        tileManager.SetLockedTiles(2,4);
-        tileManager.SetLockedTiles(3,4);
-        tileManager.SetLockedTiles(4,4);
-        tileManager.SetLockedTiles(5,4);
-        tileManager.SetLockedTiles(6,4);
-        tileManager.SetLockedTiles(7,4);
-        tileManager.SetLockedTiles(8,4);
-        //tileManager.SetLockedTiles(9,4);
-        tileManager.SetLockedTiles(4,0);
-        tileManager.SetLockedTiles(4,1);
-        tileManager.SetLockedTiles(4,2);
-        tileManager.SetLockedTiles(4,3);
-        tileManager.SetLockedTiles(4,4);
-        tileManager.SetLockedTiles(4,5);
-        tileManager.SetLockedTiles(4,6);
-        tileManager.SetLockedTiles(4,7);
-        tileManager.SetLockedTiles(4,8);
-        //tileManager.SetLockedTiles(4,9);
+        if (GridSize == 12)
+            return;
+        
+        else if (GridSize == 11)
+        {
+            tileManager.SetLockedTiles(5,0);
+            tileManager.SetLockedTiles(5,1);
+            tileManager.SetLockedTiles(5,2);
+            tileManager.SetLockedTiles(5,3);
+            tileManager.SetLockedTiles(5,4);
+            tileManager.SetLockedTiles(5,5);
+            tileManager.SetLockedTiles(5,6);
+            tileManager.SetLockedTiles(5,7);
+            tileManager.SetLockedTiles(5,8);
+            tileManager.SetLockedTiles(5,9);
+            tileManager.SetLockedTiles(5,10);
+        }
+        else if (GridSize == 10)
+        {
+            tileManager.SetLockedTiles(1,0);
+            tileManager.SetLockedTiles(1,1);
+            tileManager.SetLockedTiles(1,2);
+            tileManager.SetLockedTiles(1,3);
+            tileManager.SetLockedTiles(1,4);
+            tileManager.SetLockedTiles(1,5);
+            tileManager.SetLockedTiles(1,6);
+            tileManager.SetLockedTiles(1,7);
+            tileManager.SetLockedTiles(1,8);
+            tileManager.SetLockedTiles(1,9);
+            
+            tileManager.SetLockedTiles(8,0);
+            tileManager.SetLockedTiles(8,1);
+            tileManager.SetLockedTiles(8,2);
+            tileManager.SetLockedTiles(8,3);
+            tileManager.SetLockedTiles(8,4);
+            tileManager.SetLockedTiles(8,5);
+            tileManager.SetLockedTiles(8,6);
+            tileManager.SetLockedTiles(8,7);
+            tileManager.SetLockedTiles(8,8);
+            tileManager.SetLockedTiles(8,9);
+        }
+        else if (GridSize == 9)
+        {
+            tileManager.SetLockedTiles(0,4);
+            tileManager.SetLockedTiles(1,4);
+            tileManager.SetLockedTiles(2,4);
+            tileManager.SetLockedTiles(3,4);
+            tileManager.SetLockedTiles(4,4);
+            tileManager.SetLockedTiles(5,4);
+            tileManager.SetLockedTiles(6,4);
+            tileManager.SetLockedTiles(7,4);
+            tileManager.SetLockedTiles(8,4);
+            
+            tileManager.SetLockedTiles(4,0);
+            tileManager.SetLockedTiles(4,1);
+            tileManager.SetLockedTiles(4,2);
+            tileManager.SetLockedTiles(4,3);
+            tileManager.SetLockedTiles(4,4);
+            tileManager.SetLockedTiles(4,5);
+            tileManager.SetLockedTiles(4,6);
+            tileManager.SetLockedTiles(4,7);
+            tileManager.SetLockedTiles(4,8);
+            return;
+        }
+        
+        
     }
     private void EmptyBoard()
     {
-        for (int i = 0; i < gridSize; i++)
+        for (int i = 0; i < GridSize; i++)
         {
 
-            for (int j = 0; j < gridSize; j++)
+            for (int j = 0; j < GridSize; j++)
             {
                 Destroy(grid[i,j].transform.GetChild(0).gameObject);
             }

@@ -210,7 +210,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ae8c4177bc3a1e438175934d47858b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelInfo: {fileID: 11400000, guid: b7d72cca59b12fb4f9efc32c7746c05c, type: 2}
+  currentLevel: {fileID: 0}
+  levelsInfo:
+  - {fileID: 11400000, guid: b7d72cca59b12fb4f9efc32c7746c05c, type: 2}
+  - {fileID: 11400000, guid: 827617f65a671d846bb1cfa644c773ed, type: 2}
+  - {fileID: 11400000, guid: 724db66494c27d145b84d96aae7ebfcb, type: 2}
+  - {fileID: 11400000, guid: 3f8d0b47c4de5014ca9cdca1494edb4d, type: 2}
   timerRef: {fileID: 8333498771200661554, guid: c05ef04cfffd76143813f2b0f5340b34,
     type: 3}
   statsManager: {fileID: 587357487}
@@ -258,6 +263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeState: 0
+  cameraController: {fileID: 963194229}
   gridMaker: {fileID: 499605976}
   tileManager: {fileID: 145466122}
 --- !u!4 &216248215
@@ -531,6 +537,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -572,7 +579,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -603,6 +610,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 076baa8fba5087948a25793f88ffdcfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tile: {fileID: 21300000, guid: 093363a40d9c07a4082e1c0f82d20fc3, type: 3}
 --- !u!1 &982232570
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,6 +652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e93b9d9a9c3fc449a6daa43cef25170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeUp: 0
   levelManagerRef: {fileID: 187629281}
   boardRef: {fileID: 216248214}
 --- !u!4 &982232572

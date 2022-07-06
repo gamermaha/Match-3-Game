@@ -5,11 +5,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public bool timeUp;
     [SerializeField] private LevelManager levelManagerRef;
     [SerializeField] private Board boardRef;
     
-    private LevelInfo levelInfo;
-
+    private LevelInfo currentLevelInfo;
+    private int _currentLevel;
     private void Awake()
     {
         if (Instance == null)
@@ -20,10 +21,11 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
 
+        _currentLevel = 1;
         levelManagerRef.OnTileCountUpdate += LevelManagerRefOnOnTileCountUpdate;
         levelManagerRef.OnRequirementMet += LevelManagerRefOnOnRequirementMet;
         levelManagerRef.OnAllRequirementsMet += LevelManagerRefOnOnAllRequirementsMet;
-        levelInfo = levelManagerRef.levelInfo;
+        
     }
 
     private void Start()
@@ -31,25 +33,31 @@ public class GameManager : MonoBehaviour
         WidgetManager.Instance.Push(WidgetName.StartGame);
     }
 
-    public void StartGamePlay()
+    public void SetLevelValue(int levelSelected)
+    {
+        levelManagerRef.CheckLevelNumber(levelSelected);
+    }
+    public void StartGamePlay(int levelSelected)
     {
         var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
         if (widget != null)
-            widget.SetLevelRequirements(levelInfo);
-        
+        {
+            currentLevelInfo = levelManagerRef.AskForLevelInfo(levelSelected);
+            widget.SetLevelRequirements(currentLevelInfo);
+        }
         boardRef.gameObject.SetActive(true);
         levelManagerRef.StartLevel();
     }
     public int GiveGridSize()
     {
-        return levelInfo.GridSize;
+        return currentLevelInfo.GridSize;
     }
 
-    public void TimeUp()
+    public void BoardSetInactive()
     {
         boardRef.gameObject.SetActive(false);
-        //StartCoroutine(boardRef.Griddd());
     }
+    
     private void LevelManagerRefOnOnTileCountUpdate(int tileID)
     {
         var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
@@ -61,10 +69,30 @@ public class GameManager : MonoBehaviour
     
     private void LevelManagerRefOnOnAllRequirementsMet()
     {
+        timeUp = true;
+        StartCoroutine(OnLevelComplete());
+    }
+
+    private IEnumerator OnLevelComplete()
+    {
+        boardRef.activeState = BoardState.Init;
+        yield return new WaitForSeconds(2f);
+        BoardSetInactive();
+        levelManagerRef.OnLevelComplete();
         var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
         if (widget != null)
             widget.AllRequirementsMet();
-        boardRef.gameObject.SetActive(false);
+    }
+
+    public IEnumerator OnTimeUp()
+    {
+        timeUp = true;
+        boardRef.activeState = BoardState.Init;
+        yield return new WaitForSeconds(2f);
+        BoardSetInactive();
+        var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
+        if (widget != null)
+            widget.TimeUp();
     }
 
     private void LevelManagerRefOnOnRequirementMet(int tileID)

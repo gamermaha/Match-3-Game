@@ -21,7 +21,6 @@ public class Timer : MonoBehaviour
             }
             else
             {
-                
                 timeRemaining = 0;
                 timerIsRunning = false;
                 OnTimeEnd?.Invoke();

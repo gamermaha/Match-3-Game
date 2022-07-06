@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Tile : MonoBehaviour
+public class Tile : MonoBehaviour, IPointerDownHandler
 {
     #region Variables
 
@@ -51,13 +52,16 @@ public class Tile : MonoBehaviour
 
     #endregion
 
-    #region Method
+    #region Input
 
     private void OnMouseDown()
     {
         OnClick?.Invoke(this);
     }
-
+    
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        OnClick?.Invoke(this);
+    }
     #endregion
-   
 }
