@@ -45,17 +45,37 @@ public class LevelManager : MonoBehaviour
 
     public void CheckLevelNumber(int levelSelected)
     {
+        if (levelSelected == 0)
+        {
+            OnLevelComplete();
+            SetLevelInfoForCurrentLevel();
+            LoadLevelInfoForCurrentLevel();
+            GameManager.Instance.StartGamePlay(_currentLevelValue);
+            return;
+            
+        }
+        if (levelSelected == -1)
+        {
+            levelSelected = _currentLevelValue;
+            SetLevelInfoForCurrentLevel();
+            LoadLevelInfoForCurrentLevel();
+            GameManager.Instance.StartGamePlay(_currentLevelValue);
+            return;
+        }
+        
         if (levelSelected <= _currentLevelValue)
         {
             var widget = WidgetManager.Instance.GetWidget(WidgetName.ScrollView) as Levels;
             if (widget != null)
                 widget.LoadPlayGameScreen();
-            
+
             _currentLevelValue = levelSelected;
             SetLevelInfoForCurrentLevel();
             LoadLevelInfoForCurrentLevel();
             GameManager.Instance.StartGamePlay(_currentLevelValue);
+            return;
         }
+        
     }
     public void StartLevel()
     {
@@ -74,6 +94,12 @@ public class LevelManager : MonoBehaviour
         Destroy(timer.gameObject);
     }
 
+    public void UpdateLevelOnLevelsMenu()
+    {
+        var widget = WidgetManager.Instance.GetWidget(WidgetName.ScrollView) as Levels;
+        if (widget != null)
+            widget.SetPosition(_currentLevelValue);
+    }
     private void SaveLevel()
     {
         PlayerPrefs.SetInt("Current Level", _currentLevelValue);
@@ -123,7 +149,7 @@ public class LevelManager : MonoBehaviour
         {
             widget.TimeUpdate(timerValue);
         }
-        if (timerValue <= 1f)
+        if (timerValue <= 0.5f)
             GameManager.Instance.timeUp = true; 
     }
     

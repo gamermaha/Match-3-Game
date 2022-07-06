@@ -20,6 +20,7 @@ public class StartGame : Widget
     {
         yield return new WaitForSeconds(0.5f);
         WidgetManager.Instance.Push(WidgetName.ScrollView);
+        GameManager.Instance.CallLevelManagerToUpdateLevelOnLevelsMenu();
     }
     #endregion
     

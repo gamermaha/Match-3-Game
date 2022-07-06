@@ -30,28 +30,21 @@ public class Levels : Widget
         //scrollRect = GetComponent<ScrollRect>();
     }
 
-    private void Start()
+    public void SetPosition(int currentLevel)
     {
         _scrollRect = GetComponent<ScrollRect>();
         if (_scrollRect != null)
         {
-            if (_currentLevel >= 1 && _currentLevel <= 6)
-            {
-                _scrollRect.verticalNormalizedPosition = 0f;
-            }
-            else if (_currentLevel >= 7 && _currentLevel <= 11)
-            {
-                _scrollRect.verticalNormalizedPosition = 0.4925f;
-            }
-            else if (_currentLevel >= 12 && _currentLevel <= 18)
-            {
-                _scrollRect.verticalNormalizedPosition = 0.97f;
-               
-            }
-            
+            _scrollRect.verticalNormalizedPosition = currentLevel * 0.04f;
+            Debug.Log(_scrollRect.verticalNormalizedPosition);
+        }
+        Transform level = transform.GetChild(0);
+        for (int i = 1; i <= currentLevel; i++)
+        {
+            if(!level.Find("Level " + i).GetComponentInChildren<Button>().interactable)
+                level.Find("Level " + i).GetComponentInChildren<Button>().interactable = true;
         }
     }
-
     
     void OnDestroy()
     {

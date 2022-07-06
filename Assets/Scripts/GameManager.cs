@@ -57,6 +57,11 @@ public class GameManager : MonoBehaviour
     {
         boardRef.gameObject.SetActive(false);
     }
+
+    public void CallLevelManagerToUpdateLevelOnLevelsMenu()
+    {
+        levelManagerRef.UpdateLevelOnLevelsMenu();
+    }
     
     private void LevelManagerRefOnOnTileCountUpdate(int tileID)
     {
@@ -78,10 +83,10 @@ public class GameManager : MonoBehaviour
         boardRef.activeState = BoardState.Init;
         yield return new WaitForSeconds(2f);
         BoardSetInactive();
-        levelManagerRef.OnLevelComplete();
         var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
         if (widget != null)
             widget.AllRequirementsMet();
+        
     }
 
     public IEnumerator OnTimeUp()
@@ -93,6 +98,7 @@ public class GameManager : MonoBehaviour
         var widget = WidgetManager.Instance.GetWidget(WidgetName.PlayGame) as PlayGame;
         if (widget != null)
             widget.TimeUp();
+
     }
 
     private void LevelManagerRefOnOnRequirementMet(int tileID)
