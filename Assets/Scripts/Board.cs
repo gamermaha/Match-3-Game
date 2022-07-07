@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -200,24 +198,20 @@ public class Board : MonoBehaviour
 
     private void PopulateWithLockedTiles()
     {
-        if (GridSize == 12)
+        if (GridSize == 6)
             return;
         
-        else if (GridSize == 11)
+        else if (GridSize == 7)
         {
-            tileManager.SetLockedTiles(5,0);
-            tileManager.SetLockedTiles(5,1);
-            tileManager.SetLockedTiles(5,2);
-            tileManager.SetLockedTiles(5,3);
-            tileManager.SetLockedTiles(5,4);
-            tileManager.SetLockedTiles(5,5);
-            tileManager.SetLockedTiles(5,6);
-            tileManager.SetLockedTiles(5,7);
-            tileManager.SetLockedTiles(5,8);
-            tileManager.SetLockedTiles(5,9);
-            tileManager.SetLockedTiles(5,10);
+            tileManager.SetLockedTiles(3,0);
+            tileManager.SetLockedTiles(3,1);
+            tileManager.SetLockedTiles(3,2);
+            tileManager.SetLockedTiles(3,3);
+            tileManager.SetLockedTiles(3,4);
+            tileManager.SetLockedTiles(3,5);
+            tileManager.SetLockedTiles(3,6);
         }
-        else if (GridSize == 10)
+        else if (GridSize == 8)
         {
             tileManager.SetLockedTiles(1,0);
             tileManager.SetLockedTiles(1,1);
@@ -227,19 +221,17 @@ public class Board : MonoBehaviour
             tileManager.SetLockedTiles(1,5);
             tileManager.SetLockedTiles(1,6);
             tileManager.SetLockedTiles(1,7);
-            tileManager.SetLockedTiles(1,8);
-            tileManager.SetLockedTiles(1,9);
-            
-            tileManager.SetLockedTiles(8,0);
-            tileManager.SetLockedTiles(8,1);
-            tileManager.SetLockedTiles(8,2);
-            tileManager.SetLockedTiles(8,3);
-            tileManager.SetLockedTiles(8,4);
-            tileManager.SetLockedTiles(8,5);
-            tileManager.SetLockedTiles(8,6);
-            tileManager.SetLockedTiles(8,7);
-            tileManager.SetLockedTiles(8,8);
-            tileManager.SetLockedTiles(8,9);
+           
+
+            tileManager.SetLockedTiles(6,0);
+            tileManager.SetLockedTiles(6,1);
+            tileManager.SetLockedTiles(6,2);
+            tileManager.SetLockedTiles(6,3);
+            tileManager.SetLockedTiles(6,4);
+            tileManager.SetLockedTiles(6,5);
+            tileManager.SetLockedTiles(6,6);
+            tileManager.SetLockedTiles(6,7);
+           
         }
         else if (GridSize == 9)
         {
@@ -267,6 +259,7 @@ public class Board : MonoBehaviour
         
         
     }
+    
     private void EmptyBoard()
     {
         for (int i = 0; i < GridSize; i++)

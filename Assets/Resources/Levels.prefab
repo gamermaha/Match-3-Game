@@ -764,11 +764,6 @@ MonoBehaviour:
   OnHide:
     m_PersistentCalls:
       m_Calls: []
-  level1Button: {fileID: 3484745425660813233}
-  level2Button: {fileID: 7841126235662928581}
-  level3Button: {fileID: 2339603924234941364}
-  level4Button: {fileID: 2373567857160139009}
-  text: {fileID: 8613619607154666846}
 --- !u!1 &2523843310871076787
 GameObject:
   m_ObjectHideFlags: 0

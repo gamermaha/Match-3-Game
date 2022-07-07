@@ -21,4 +21,4 @@ MonoBehaviour:
   - {x: 5, y: 8}
   - {x: 6, y: 8}
   - {x: 7, y: 8}
-  gridSize: 11
+  gridSize: 8

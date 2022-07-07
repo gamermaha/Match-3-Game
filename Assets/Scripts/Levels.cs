@@ -7,7 +7,7 @@ public class Levels : Widget
     private ScrollRect _scrollRect;
     #region UNity Methods
     
-    public void SetPosition(int currentLevel)
+    public void SetPositionAndInteractable(int currentLevel)
     {
         _scrollRect = GetComponent<ScrollRect>();
         if (_scrollRect != null)

@@ -19,6 +19,6 @@ MonoBehaviour:
   - {x: 3, y: 3}
   - {x: 4, y: 3}
   - {x: 5, y: 3}
-  - {x: 6, y: 6}
+  - {x: 6, y: 3}
   - {x: 7, y: 3}
-  gridSize: 11
+  gridSize: 6

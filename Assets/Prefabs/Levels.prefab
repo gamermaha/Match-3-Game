@@ -3714,8 +3714,3 @@ MonoBehaviour:
   OnHide:
     m_PersistentCalls:
       m_Calls: []
-  level1Button: {fileID: 7681349704969811143}
-  level2Button: {fileID: 3896926082087494067}
-  level3Button: {fileID: 8841162021250193602}
-  level4Button: {fileID: 8806072432092273271}
-  text: {fileID: 0}

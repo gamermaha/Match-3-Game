@@ -31,11 +31,10 @@ public class PlayGame : Widget
             tilesCount[tileID-1].text = "" + _tilesCount[tileID-1];
         }
         if (_tilesCount[tileID-1] == 0)
-        {
             RequirementMet(tileID);
-        }
         
     }
+    
     public void TimeUpdate(float time)
     {
         if (time > 0)
@@ -45,22 +44,10 @@ public class PlayGame : Widget
             timerValue.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
     }
-
-    public void RequirementMet(int tileID)
-    {
-        tilesCount[tileID-1].text = "done";
-    }
-
-    public void AllRequirementsMet()
-    {
-        Hide();
-        WidgetManager.Instance.Push(WidgetName.LevelCompleted);
-    }
-
-    public void TimeUp()
-    {
-        Hide();
-        WidgetManager.Instance.Push(WidgetName.GameOver);
-    }
     
+    public void TimeUp() => WidgetManager.Instance.Push(WidgetName.GameOver);
+
+    public void RequirementMet(int tileID) => tilesCount[tileID-1].text = "done";
+
+    public void AllRequirementsMet() => WidgetManager.Instance.Push(WidgetName.LevelCompleted);
 }

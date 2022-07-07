@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -8,9 +6,9 @@ public class CameraController : MonoBehaviour
 
     public void SetCamera(int gridSize)
     {
-        float orthoSize = tile.bounds.size.x * gridSize + Screen.height / Screen.width + 2f;
+        float orthoSize = tile.bounds.size.x * gridSize + Screen.height / Screen.width;
         Camera.main.orthographicSize = orthoSize;
-        
-        Camera.main.transform.position = new Vector3(gridSize + 2, gridSize + 13, -10);
+
+        transform.position = new Vector3( (2.5f * (gridSize-1))/ 2, (2.5f * gridSize-1), -10);
     }
 }

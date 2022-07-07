@@ -208,43 +208,75 @@ public class TileManager : MonoBehaviour
 
     #region TileSwap
 
-    private void Select(Tile selectedTile)
+    public void Select(Tile selectedTile)
     {
         _isSelected = true;
-        _prevSelected = selectedTile;
+        //_prevSelected = selectedTile;
         selectedTile.GetComponent<SpriteRenderer>().color = new Color(.5f, .5f, .5f, 1f);
     }
 
-    private void Deselect(Tile selectedTile)
+    public void Deselect(Tile selectedTile)
     {
         _isSelected = false;
         selectedTile.GetComponent<SpriteRenderer>().color = Color.white;
-        _prevSelected = null;
+        //_prevSelected = null;
     }
 
-    private void OnTileClicked(Tile selectedTile)
+    private void OnTileClicked(Tile selectedTile, TileMovementDirection tileDir)
     {
-        if (_prevSelected == null)
+        switch (tileDir)
         {
-            Select(selectedTile);
-        }
-        else
-        {
-            if (selectedTile.Index.x == _prevSelected.Index.x)
+            case TileMovementDirection.left:
             {
-                if (selectedTile.Index.y == _prevSelected.Index.y + 1 ||
-                    selectedTile.Index.y == _prevSelected.Index.y - 1)
-                    SwapTiles(selectedTile, _prevSelected);
+                if (selectedTile.Index.x >= 1 &&
+                    boardRef.grid[selectedTile.Index.x - 1, selectedTile.Index.y].GetComponentInChildren<Tile>() != null &&
+                    !boardRef.grid[selectedTile.Index.x - 1, selectedTile.Index.y].GetComponentInChildren<Tile>().Locked)
+                    SwapTiles(selectedTile,
+                        boardRef.grid[selectedTile.Index.x - 1, selectedTile.Index.y].GetComponentInChildren<Tile>());
+                else
+                    selectedTile.transform.localPosition = Vector3.zero;
+
             }
-            else if (selectedTile.Index.y == _prevSelected.Index.y)
+                break;
+            case TileMovementDirection.right:
             {
-                if (selectedTile.Index.x == _prevSelected.Index.x + 1 ||
-                    selectedTile.Index.x == _prevSelected.Index.x - 1)
-                    SwapTiles(selectedTile, _prevSelected);
+                if (selectedTile.Index.x < boardRef.GridSize-1 &&
+                    boardRef.grid[selectedTile.Index.x+1, selectedTile.Index.y].GetComponentInChildren<Tile>() != null &&
+                    !boardRef.grid[selectedTile.Index.x+1, selectedTile.Index.y].GetComponentInChildren<Tile>().Locked)
+                    SwapTiles(selectedTile,
+                        boardRef.grid[selectedTile.Index.x+1, selectedTile.Index.y].GetComponentInChildren<Tile>());
+                else
+                    selectedTile.transform.localPosition = Vector3.zero;
+
             }
-            Deselect(_prevSelected);
+                break;
+            case TileMovementDirection.up:
+            {
+                if (selectedTile.Index.y < boardRef.GridSize-1  &&
+                    boardRef.grid[selectedTile.Index.x, selectedTile.Index.y+1].GetComponentInChildren<Tile>() != null && 
+                    !boardRef.grid[selectedTile.Index.x, selectedTile.Index.y+1].GetComponentInChildren<Tile>().Locked)
+                    SwapTiles(selectedTile,
+                        boardRef.grid[selectedTile.Index.x, selectedTile.Index.y+1].GetComponentInChildren<Tile>());
+                else
+                    selectedTile.transform.localPosition = Vector3.zero;
+
+            }
+                break;
+            case TileMovementDirection.down:
+            {
+                if (selectedTile.Index.y >= 1 &&
+                    boardRef.grid[selectedTile.Index.x, selectedTile.Index.y-1].GetComponentInChildren<Tile>() != null &&
+                    !boardRef.grid[selectedTile.Index.x, selectedTile.Index.y-1].GetComponentInChildren<Tile>().Locked)
+                    SwapTiles(selectedTile,
+                        boardRef.grid[selectedTile.Index.x, selectedTile.Index.y-1].GetComponentInChildren<Tile>());
+                else
+                    selectedTile.transform.localPosition = Vector3.zero;
+
+            }
+                break;
         }
     }
+
 
     private void SwapTiles(Tile tile1, Tile tile2)
     {
